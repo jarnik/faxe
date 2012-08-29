@@ -3,19 +3,25 @@ package jarnik.faxe;
 import nme.Assets;
 import nme.display.Sprite;
 import nme.display.Stage;
+import nme.display.DisplayObjectContainer;
 import nme.text.TextField;
 import nme.text.Font;
 import nme.text.TextFormat;
+import nme.Lib;
+import nme.display.Stage;
+import nme.display.StageAlign;
+import nme.display.StageScaleMode;
+import nme.events.Event;
 import nme.events.KeyboardEvent;
+
+import jarnik.faxe.core.Layout;
+import jarnik.faxe.core.FaXe;
 
 class Main extends Sprite 
 {
     private static var inited:Bool;
     public static var w:Int;
     public static var h:Int;
-    private static var state:State;
-    private static var prevState:State;
-    private static var states:Hash<State>;
     public static var upscale:Float;
     private static var stateLayer:Sprite;
     private static var debug:TextField;
@@ -25,40 +31,6 @@ class Main extends Sprite
     public static var font:Font;
     public static var format:TextFormat;
     private static var debugLayer:Sprite;
-   
-    public static function switchState( newState:States ):Void {
-        prevState = state;
-        Main.log("State: "+newState);
-        if ( state != null ) {
-            state.visible = false;
-		    stateLayer.removeChild( state );
-        }
-        state = getState( newState );
-        state.visible = true;
-		stateLayer.addChild( state );
-        state.scaleX = upscale;
-        state.scaleY = upscale;
-    }
-
-    private static function getState( s:States ):State {
-        if ( states == null )
-            states = new Hash<State>();
-
-        var state:State = states.get( Std.string(s) );
-        if ( state != null ) {
-            Main.log("got cached: "+state);
-            return state;
-        }
-        
-        switch ( s ) {
-            case STATE_TITLE:
-                state = new TitleState();
-            default:
-        }
-        states.set( Std.string(s), state );
-        Main.log("built new: "+state);
-        return state;
-    }
 
     private static function initLog():Void {
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
@@ -111,10 +83,6 @@ class Main extends Sprite
         var now:Float = Lib.getTimer() / 1000;
         timeElapsed = (now - prevFrameTime);
         prevFrameTime = now;
-
-        if ( state != null ) {
-            state.update( timeElapsed );
-        }
     }
 
 	// Entry point
@@ -133,13 +101,11 @@ class Main extends Sprite
         h = 320;       
         upscale = Lib.current.stage.stageWidth / w;
         
-        switchState( STATE_PLAY );
+        var layout:Layout = FaXe.load("assets/layout.xcf");
+        var gui:DisplayObjectContainer = layout.render("player");
+        stateLayer.addChild( gui ); 
     }
 
-    public static function getPrevState():State {
-        return prevState;
-    }
-	
     public static function keyHandler( e:KeyboardEvent ):Void {
         switch ( e.keyCode ) {
             case 219:
