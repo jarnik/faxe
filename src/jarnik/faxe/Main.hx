@@ -101,9 +101,7 @@ class Main extends Sprite
         h = 320;       
         upscale = Lib.current.stage.stageWidth / w;
         
-        var layout:Layout = FaXe.load("assets/layout.xcf");
-        var gui:DisplayObjectContainer = layout.render("player");
-        stateLayer.addChild( gui ); 
+        test();
     }
 
     public static function keyHandler( e:KeyboardEvent ):Void {
@@ -126,6 +124,12 @@ class Main extends Sprite
         #end
 
         debug.text = msg+"\n"+debug.text;
+    }
+
+    private static function test():Void {
+        var layout:Layout = FaXe.load("assets/layout.xcf");
+        var gui:DisplayObjectContainer = layout.render("player");
+        stateLayer.addChild( gui ); 
     }
 
 }

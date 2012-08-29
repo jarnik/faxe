@@ -15,10 +15,25 @@ class Element
 
 	public function new () 
 	{
+        children = [];
+        name = "";
+        transform = new Matrix();
+        transform.identity();
 	}
 
+    public function renderSelf():DisplayObjectContainer{
+        return new Sprite();
+    }
+
+    public function addChild( e:Element ):Void {
+        children.push( e );
+    }
+
     public function render():DisplayObjectContainer {
-        return null;
+        var d:DisplayObjectContainer = renderSelf();
+        for ( e in children )
+            d.addChild( e.render() );
+        return d;
     }
 
 }

@@ -1,4 +1,4 @@
-package jarnik.faxe.core;
+package jarnik.faxe.model;
 
 import nme.Assets;
 import nme.display.Sprite;
@@ -10,13 +10,17 @@ import jarnik.faxe.Main;
 class Layout 
 {
     public var graphics:Graphics;
+    private var s:Sprite;
 
 	public function new () 
 	{
+        super();
+        s = new Sprite();
+        graphics = s.graphics();
 	}
 
-    public function render(path:String):DisplayObjectContainer {
-        return null;
+    override public function renderSelf():DisplayObjectContainer {        
+        return s;
     }
 
 }

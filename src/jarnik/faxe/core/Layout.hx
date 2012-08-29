@@ -5,6 +5,8 @@ import nme.display.Sprite;
 import nme.display.DisplayObjectContainer;
 
 import jarnik.faxe.Main;
+import jarnik.faxe.model.Element;
+import jarnik.faxe.model.Image;
 
 class Layout 
 {
@@ -14,7 +16,11 @@ class Layout
 	}
 
     public function render(path:String):DisplayObjectContainer {
-        return null;
+        var e:Element;
+
+        var img:Image = new Image( Assets.getBitmapData("assets/heart.png"));
+
+        return img.render();
     }
 
 }

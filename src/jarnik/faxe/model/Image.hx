@@ -1,7 +1,9 @@
-package jarnik.faxe.core;
+package jarnik.faxe.model;
 
 import nme.Assets;
 import nme.display.Sprite;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
 import nme.display.DisplayObjectContainer;
 
 import jarnik.faxe.Main;
@@ -9,13 +11,19 @@ import jarnik.faxe.Main;
 class Image extends Element
 {
     public var bitmapData:BitmapData;
+    private var bitmap:Bitmap;
 
-	public function new () 
+	public function new ( bmd:BitmapData ) 
 	{
+        super();
+        bitmapData = bmd;
+        bitmap = new Bitmap( bitmapData );
 	}
 
-    public function render(path:String):DisplayObjectContainer {
-        return null;
+    override public function renderSelf():DisplayObjectContainer {
+        var d:DisplayObjectContainer = super.renderSelf();
+        d.addChild( bitmap );
+        return d;
     }
 
 }
