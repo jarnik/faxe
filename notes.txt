@@ -1,0 +1,44 @@
+input formats:
+    - .xcf - GIMP
+    - .psd - GIMP / Photoshop
+    - .svg - Inkscape (bitmaps linked / embedded)
+    - .swf ? 
+
+- internal conversion to .svg
+- conjure as a NME DisplayObject hierarchy
+- ability to render vectors to bitmaps
+
+- written in haXe 
+
+existing solutions:
+ - it3rate - in: swf in, out: swf, html5, svg, xna, unity, android, ios -  https://github.com/debreuil/VexDrawCanvas/wiki/Overview
+ - http://lib.haxe.org/p/svg
+ - http://lib.haxe.org/p/hydrax
+ - PSD parser in AS3 http://durej.com/?p=153
+
+docs:
+ XCF
+ - http://en.wikipedia.org/wiki/XCF_(file_format)
+ - http://henning.makholm.net/xcftools/xcfspec-saved
+ PSD
+ - http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/
+ SWF
+ - http://www.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf_file_format_spec_v10.pdf
+ SVG
+ - http://www.w3.org/TR/SVG/
+ - Inkscape http://wiki.inkscape.org/wiki/index.php/Frequently_asked_questions#SVG_topics
+
+
+Example API calls:
+
+    var library:Masque = Masque.load("assets/layout.xcf");
+    var gui:Sprite = library.render("player");
+    addChild( gui );
+
+ROADMAP
+ - prepare a set of .psd, .xcf, .svg, .swf (2 layers, bitmap in each) to use as a simple test-case
+ - try parsing .xcf 
+ - build basic facade
+
+
+
