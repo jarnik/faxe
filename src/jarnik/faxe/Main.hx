@@ -62,7 +62,7 @@ class Main extends Sprite
         //debugLayer.scaleY = upscale;
 
         debugLayer.mouseEnabled = false;
-        debugLayer.visible = false;
+        //debugLayer.visible = false;
 
         Lib.current.stage.addEventListener( Event.ENTER_FRAME, update );
         Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, keyHandler );
@@ -127,9 +127,11 @@ class Main extends Sprite
     }
 
     private static function test():Void {
-        var layout:Layout = FaXe.load("assets/layout.xcf");
+        var layout:Layout = FaXe.load("assets/layouts/layout.svg");
         var gui:DisplayObjectContainer = layout.render("player");
         stateLayer.addChild( gui ); 
+        //Main.log( layout.toString("assets/layout.svg") );
+        //layout.toString("assets/layouts/layout.svg");
     }
 
 }

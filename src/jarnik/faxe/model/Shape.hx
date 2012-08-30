@@ -7,7 +7,7 @@ import nme.display.Graphics;
 
 import jarnik.faxe.Main;
 
-class Layout 
+class Shape extends Element 
 {
     public var graphics:Graphics;
     private var s:Sprite;
@@ -16,7 +16,7 @@ class Layout
 	{
         super();
         s = new Sprite();
-        graphics = s.graphics();
+        graphics = s.graphics;
 	}
 
     override public function renderSelf():DisplayObjectContainer {        

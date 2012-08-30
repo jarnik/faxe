@@ -9,7 +9,7 @@ class FaXe
 {
 
     public static function load( url:String ):Layout {
-        return new Layout();
+        return new Layout( url );
     }
 
 }

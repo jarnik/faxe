@@ -7,20 +7,21 @@ import nme.display.DisplayObjectContainer;
 import jarnik.faxe.Main;
 import jarnik.faxe.model.Element;
 import jarnik.faxe.model.Image;
+import jarnik.faxe.parser.IParser;
+import jarnik.faxe.parser.ParserSVG;
 
 class Layout 
 {
+    public var root:Element;
 
-	public function new () 
+	public function new (path:String) 
 	{
+        var p:IParser = new ParserSVG();
+        root = p.parse( Assets.getBytes( path ) );
 	}
 
     public function render(path:String):DisplayObjectContainer {
-        var e:Element;
-
-        var img:Image = new Image( Assets.getBitmapData("assets/heart.png"));
-
-        return img.render();
+        return root.render();
     }
 
 }

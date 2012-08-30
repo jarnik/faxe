@@ -30,10 +30,12 @@
     <assets path="Assets/sfx" rename="assets/sfx" type="sound" include="*" />
     <assets path="Assets/json" rename="assets/json" include="*" />
     -->
+    <assets path="Assets" rename="assets" include="*.png" type="image" />
     <assets path="Assets/fonts" rename="assets/fonts" type="font" include="*" />
-    <assets path="Assets" rename="assets" include="*.png" exclude="nme.svg" />
+    <assets path="Assets/layouts" rename="assets/layouts" include="*" type="binary" />
 	
     <!--
+    <assets path="Assets" rename="assets" include="*" exclude="nme.svg" />
 	<icon name="Assets/nme.svg" />
     <certificate path="jarnik.keystore" password="N4_51ca!" />
 	<icon name="Assets/icon.png" width="16" height="16" />

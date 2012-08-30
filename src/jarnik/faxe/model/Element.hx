@@ -25,6 +25,14 @@ class Element
         return new Sprite();
     }
 
+    public function toString():String {
+        var out:String = "> "+name+" start\n";
+        for ( c in children )
+            out += c.toString()+"\n";
+        out += "< "+name+" end\n";
+        return out;
+    }
+
     public function addChild( e:Element ):Void {
         children.push( e );
     }
