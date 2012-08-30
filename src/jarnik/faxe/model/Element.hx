@@ -2,6 +2,7 @@ package jarnik.faxe.model;
 
 import nme.Assets;
 import nme.display.Sprite;
+import nme.display.DisplayObject;
 import nme.display.DisplayObjectContainer;
 import nme.geom.Matrix;
 
@@ -37,10 +38,17 @@ class Element
         children.push( e );
     }
 
+    public function addChildAt( e:Element, index:Int ):Void {
+        children.insert( index, e );
+    }
+
     public function render():DisplayObjectContainer {
         var d:DisplayObjectContainer = renderSelf();
-        for ( e in children )
-            d.addChild( e.render() );
+        var c:DisplayObject;
+        for ( e in children ) {
+            c = e.render();
+            d.addChild( c );
+        }
         return d;
     }
 

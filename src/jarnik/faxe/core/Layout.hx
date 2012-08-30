@@ -9,6 +9,7 @@ import jarnik.faxe.model.Element;
 import jarnik.faxe.model.Image;
 import jarnik.faxe.parser.IParser;
 import jarnik.faxe.parser.ParserSVG;
+import jarnik.faxe.parser.ParserXCF;
 
 class Layout 
 {
@@ -16,7 +17,8 @@ class Layout
 
 	public function new (path:String) 
 	{
-        var p:IParser = new ParserSVG();
+        //var p:IParser = new ParserSVG();
+        var p:IParser = new ParserXCF();
         root = p.parse( Assets.getBytes( path ) );
 	}
 
