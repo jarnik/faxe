@@ -129,24 +129,26 @@ class ParserXCF implements IParser
         };
         
         for ( lptr in layerAddresses ) {
-            e.addChildAt( parseLayer( lptr ), 0 );
+            e.addChildAt( parseLayer( lptr, e ), 0 ); 
         }
         return e;
     }
 
-    private function parseLayer( address:Int ):Element {
+    private function parseLayer( address:Int, root:Element ):Element {
         data.position = address;
         var w:Int = readUWord();
         var h:Int = readUWord();
         var img_type:Int = readUWord();
         var name:String = readString();
-        //Main.log("layer "+w+"x"+h+" type "+img_type+" name "+name);
+        Main.log("layer "+w+"x"+h+" type "+img_type+" name "+name);
         var prop_type:Int = -1;
         var payload_length:Int = 0;
         var counter:Int = 0;
         var dx:Int = 0;
         var dy:Int = 0;
         var opacity:Int = 255;
+        var isGroup:Bool = false;
+        var parent:Element = null;
 
         prop_type = readUWord();
         while ( counter < 150 ) {
@@ -158,6 +160,31 @@ class ParserXCF implements IParser
                 case 15: //PROP_OFFSETS
                     dx = readWord();
                     dy = readWord();
+                case 29: // PROP_GROUP_ITEM
+                    isGroup = true;
+                    //Main.log("is a folder!");
+                    readChars( payload_length );
+                case 30: // PROP_ITEM_PATH
+                    //Main.log("is a child "+payload_length);
+                    parent = root;
+                    var parentIndex:Int; 
+                    while ( payload_length > 0 ) {
+                        parentIndex = readUWord();
+                        //Main.log("parentindex "+parentIndex);
+                        //Main.log("parent children "+parent.children);
+                        for ( i in (parent.children.length-1)...0 ) {
+                            if ( !Std.is( parent.children[ i ], Image ) )
+                                parentIndex--;
+                            if ( parentIndex == -1 ) {
+                                parent = parent.children[ i ];
+                                //Main.log("parent "+parent);
+                                break;
+                            }
+                        }
+                        //parent = parent.children[ parent.children.length - parentIndex - 1 ];
+                        payload_length -= 4;
+                    }
+                    //Main.log(" parent = "+parent );
                 default:
                     readChars( payload_length );
             }
@@ -170,13 +197,19 @@ class ParserXCF implements IParser
             counter++;
         }
 
-        var hptr:Int = readUWord();
-        var mptr:Int = readUWord();
-
-        var bitmapData:BitmapData = parseHierarchy( hptr );
-        var e:Image = new Image( bitmapData );
+        var e:Element;
+        if ( !isGroup ) {
+            var hptr:Int = readUWord();
+            var mptr:Int = readUWord();
+            var bitmapData:BitmapData = parseHierarchy( hptr );
+            e = new Image( bitmapData );
+        } else
+            e = new Element();
         e.move( dx, dy );
         e.setAlpha( opacity / 255 );
+
+        if ( parent != null )
+            parent.addChildAt( e, 0 );             
     
         return e;
     }

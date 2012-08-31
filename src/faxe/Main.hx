@@ -40,7 +40,7 @@ class Main extends Sprite
 		Lib.current.addChild( stateLayer );
 
         font = Assets.getFont ("assets/fonts/nokiafc22.ttf");
-        format = new TextFormat (font.fontName, 16, 0xFF0000);
+        format = new TextFormat (font.fontName, 8, 0xFF0000);
 
         Lib.current.stage.addChild( debugLayer = new Sprite() );
 
@@ -131,7 +131,9 @@ class Main extends Sprite
         //var layout:Layout = FaXe.load("assets/layouts/layout.xcf");
 
         var now:Float = Lib.getTimer() / 1000;
-        var layout:Layout = FaXe.load("assets/layouts/scene.xcf");
+        //var layout:Layout = FaXe.load("assets/layouts/scene.xcf");
+        var layout:Layout = FaXe.load("assets/layouts/layout.xcf");
+        //var layout:Layout = FaXe.load("assets/layouts/garage.xcf");
         var gui:DisplayObjectContainer = layout.render("player");
         stateLayer.addChild( gui ); 
         var now2:Float = Lib.getTimer() / 1000;
