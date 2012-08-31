@@ -128,9 +128,14 @@ class Main extends Sprite
 
     private static function test():Void {
         //var layout:Layout = FaXe.load("assets/layouts/layout.svg");
-        var layout:Layout = FaXe.load("assets/layouts/layout.xcf");
+        //var layout:Layout = FaXe.load("assets/layouts/layout.xcf");
+
+        var now:Float = Lib.getTimer() / 1000;
+        var layout:Layout = FaXe.load("assets/layouts/scene.xcf");
         var gui:DisplayObjectContainer = layout.render("player");
         stateLayer.addChild( gui ); 
+        var now2:Float = Lib.getTimer() / 1000;
+        Main.log("parse done! "+( now2 - now) );
         //Main.log( layout.toString("assets/layout.svg") );
         //layout.toString("assets/layouts/layout.svg");
     }

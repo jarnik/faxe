@@ -43,7 +43,8 @@ class ParserXCF implements IParser
     }
 
     private function readByte( ):Int {
-        return data.readUnsignedByte();
+        data.position++;
+        return data[ data.position - 1 ];
     }
 
     private function readUWord():Int {
@@ -216,6 +217,8 @@ class ParserXCF implements IParser
         for ( tptr in tilePtrs ) {
             tw = ((index+1) % columns == 0 ? w % 64 : 64 );
             th = ((index+1) % rows == 0 ? h % 64 : 64 );
+            tw = ( tw == 0 ? 64 : tw );
+            th = ( th == 0 ? 64 : th );
             bytes = parseTile( tptr, tw, th, bpp );
             bytes.position = 0;
             //Main.log("got tile bytes "+bytes.length+" 1 "+bytes.readUnsignedByte());
@@ -240,9 +243,11 @@ class ParserXCF implements IParser
         var val:Int;
         var length:Int;
         var count:Int;
+        var pos:Int = 0;
         // RLE is RGBA
         for ( s in 0...4 ) {
-            bytes.position = (s + 1) % 4;
+            //bytes.position = (s + 1) % 4;
+            pos = (s + 1) % 4;
             size = w*h;
             //Main.log("size "+size+" data pos "+data.position);
             count = 0;
@@ -257,8 +262,10 @@ class ParserXCF implements IParser
                 }*/
 
                 if ( bpp == 3 && s == 3 ) {
-                    bytes.writeByte( 255 );
-                    bytes.position += 3;
+                    //bytes.writeByte( 255 );
+                    //bytes.position += 3;
+                    bytes[ pos ] = 255;
+                    pos += 4;
                     size -= 1;
                     continue;
                 }                    
@@ -272,8 +279,10 @@ class ParserXCF implements IParser
                     size -= length;
                     count += length;
                     while (length-- > 0) {
-                        bytes.writeByte( readByte() );
-                        bytes.position += 3;
+                        //bytes.writeByte( readByte() );
+                        //bytes.position += 3;
+                        bytes[ pos ] = readByte();
+                        pos += 4;
                     }
                 } else {
                     length += 1;
@@ -285,8 +294,10 @@ class ParserXCF implements IParser
     
                     val = readByte();  
                     for ( j in 0...length) {
-                        bytes.writeByte( val );
-                        bytes.position += 3;
+                        //bytes.writeByte( val );
+                        //bytes.position += 3;
+                        bytes[ pos ] = val;
+                        pos += 4;
                     }
                 }
             }
