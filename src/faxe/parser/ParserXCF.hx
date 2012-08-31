@@ -1,4 +1,4 @@
-package jarnik.faxe.parser;
+package faxe.parser;
 
 import nme.Assets;
 import nme.display.Sprite;
@@ -9,10 +9,10 @@ import nme.display.DisplayObjectContainer;
 import nme.utils.ByteArray;
 import nme.geom.Rectangle;
 
-import jarnik.faxe.model.Element;
-import jarnik.faxe.model.Image;
-import jarnik.faxe.model.Shape;
-import jarnik.faxe.Main;
+import faxe.model.Element;
+import faxe.model.Image;
+import faxe.model.Shape;
+import faxe.Main;
 
 typedef XCF_HEADER = {
     magic:String,

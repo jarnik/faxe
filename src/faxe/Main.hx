@@ -1,4 +1,4 @@
-package jarnik.faxe;
+package faxe;
 
 import nme.Assets;
 import nme.display.Sprite;
@@ -14,8 +14,8 @@ import nme.display.StageScaleMode;
 import nme.events.Event;
 import nme.events.KeyboardEvent;
 
-import jarnik.faxe.core.Layout;
-import jarnik.faxe.core.FaXe;
+import faxe.core.Layout;
+import faxe.core.FaXe;
 
 class Main extends Sprite 
 {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<app title="faxe" file="build" main="jarnik.faxe.Main" version="0.0.1" company="jarnik" package="com.jarnik.faxe" />
+	<app title="faxe" file="build" main="faxe.Main" version="0.0.1" company="jarnik" package="com.jarnik.faxe" />
 	
     <!--
 	<window background="0x303030" width="320" height="480" fps="30" orientation="landscape" resizable="true"/>

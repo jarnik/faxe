@@ -1,11 +1,11 @@
-package jarnik.faxe.model;
+package faxe.model;
 
 import nme.Assets;
 import nme.display.Sprite;
 import nme.display.DisplayObjectContainer;
 import nme.display.Graphics;
 
-import jarnik.faxe.Main;
+import faxe.Main;
 
 class Shape extends Element 
 {

@@ -1,4 +1,4 @@
-package jarnik.faxe.model;
+package faxe.model;
 
 import nme.Assets;
 import nme.display.Sprite;
@@ -6,7 +6,7 @@ import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.DisplayObjectContainer;
 
-import jarnik.faxe.Main;
+import faxe.Main;
 
 class Image extends Element
 {

@@ -1,4 +1,4 @@
-package jarnik.faxe.model;
+package faxe.model;
 
 import nme.Assets;
 import nme.display.Sprite;
@@ -7,7 +7,7 @@ import nme.display.DisplayObjectContainer;
 import nme.geom.Matrix;
 import nme.geom.ColorTransform;
 
-import jarnik.faxe.Main;
+import faxe.Main;
 
 class Element
 {

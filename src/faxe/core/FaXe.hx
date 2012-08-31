@@ -1,9 +1,9 @@
-package jarnik.faxe.core;
+package faxe.core;
 
 import nme.Assets;
 import nme.display.Sprite;
 
-import jarnik.faxe.Main;
+import faxe.Main;
 
 class FaXe 
 {

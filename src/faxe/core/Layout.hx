@@ -1,15 +1,15 @@
-package jarnik.faxe.core;
+package faxe.core;
 
 import nme.Assets;
 import nme.display.Sprite;
 import nme.display.DisplayObjectContainer;
 
-import jarnik.faxe.Main;
-import jarnik.faxe.model.Element;
-import jarnik.faxe.model.Image;
-import jarnik.faxe.parser.IParser;
-import jarnik.faxe.parser.ParserSVG;
-import jarnik.faxe.parser.ParserXCF;
+import faxe.Main;
+import faxe.model.Element;
+import faxe.model.Image;
+import faxe.parser.IParser;
+import faxe.parser.ParserSVG;
+import faxe.parser.ParserXCF;
 
 class Layout 
 {

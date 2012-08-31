@@ -1,4 +1,4 @@
-package jarnik.faxe.parser;
+package faxe.parser;
 
 import nme.Assets;
 import nme.display.Sprite;
@@ -7,7 +7,7 @@ import nme.display.BitmapData;
 import nme.display.DisplayObjectContainer;
 import nme.utils.ByteArray;
 
-import jarnik.faxe.model.Element;
+import faxe.model.Element;
 
 interface IParser
 {
