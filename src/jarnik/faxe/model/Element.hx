@@ -5,12 +5,14 @@ import nme.display.Sprite;
 import nme.display.DisplayObject;
 import nme.display.DisplayObjectContainer;
 import nme.geom.Matrix;
+import nme.geom.ColorTransform;
 
 import jarnik.faxe.Main;
 
 class Element
 {
     public var transform:Matrix;
+    public var color:ColorTransform;
     public var children:Array<Element>;
     public var name:String;
 
@@ -20,10 +22,19 @@ class Element
         name = "";
         transform = new Matrix();
         transform.identity();
+        color = new ColorTransform();
 	}
 
     public function renderSelf():DisplayObjectContainer{
         return new Sprite();
+    }
+
+    public function move( x:Float, y:Float ):Void {
+        transform.translate( x, y );
+    }
+
+    public function setAlpha( alpha:Float ):Void {
+        color.alphaMultiplier = alpha;
     }
 
     public function toString():String {
@@ -44,6 +55,8 @@ class Element
 
     public function render():DisplayObjectContainer {
         var d:DisplayObjectContainer = renderSelf();
+        d.transform.matrix = transform;
+        d.transform.colorTransform = color;
         var c:DisplayObject;
         for ( e in children ) {
             c = e.render();

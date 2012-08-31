@@ -49,6 +49,10 @@ class ParserXCF implements IParser
     private function readUWord():Int {
         return data.readUnsignedInt();
     }
+    
+    private function readWord():Int {
+        return data.readInt();
+    }
 
     private function readString():String {
         var length:Int = readUWord();
@@ -139,18 +143,28 @@ class ParserXCF implements IParser
         var prop_type:Int = -1;
         var payload_length:Int = 0;
         var counter:Int = 0;
+        var dx:Int = 0;
+        var dy:Int = 0;
+        var opacity:Int = 255;
 
         prop_type = readUWord();
         while ( counter < 150 ) {
             //Main.log("prop "+prop_type);
+            payload_length = readUWord();
+            switch( prop_type ) {
+                case 6: //PROP_OPACITY
+                    opacity = readWord();
+                case 15: //PROP_OFFSETS
+                    dx = readWord();
+                    dy = readWord();
+                default:
+                    readChars( payload_length );
+            }
             if ( prop_type == 0 ) {
-                payload_length = readUWord();
                 //Main.log(" > length "+payload_length);
                 break;
             }
-            payload_length = readUWord();
             //Main.log(" > length "+payload_length);
-            readChars( payload_length );
             prop_type = readUWord();        
             counter++;
         }
@@ -160,6 +174,8 @@ class ParserXCF implements IParser
 
         var bitmapData:BitmapData = parseHierarchy( hptr );
         var e:Image = new Image( bitmapData );
+        e.move( dx, dy );
+        e.setAlpha( opacity / 255 );
     
         return e;
     }
