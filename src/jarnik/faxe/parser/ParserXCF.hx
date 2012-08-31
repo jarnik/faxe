@@ -205,21 +205,23 @@ class ParserXCF implements IParser
         var marker:Int = readUWord();
         //Main.log("zero marker "+marker);
                 
-        var bmd:BitmapData = new BitmapData( w, h, true, 0x00000000 );
+        var bmd:BitmapData = new BitmapData( w, h, true, 0xff000000 );
+        var bytes:ByteArray = new ByteArray(); // ARGB sequence
+        bytes.length = w*h*bpp;
 
         var index:Int = 0;
         var tw:Int;
         var th:Int;
         var columns:Int = Math.ceil(w / 64);
         var rows:Int = Math.ceil(h / 64);
-        var bytes:ByteArray;
+        //var bytes:ByteArray;
         var rect:Rectangle = new Rectangle();
         for ( tptr in tilePtrs ) {
             tw = ((index+1) % columns == 0 ? w % 64 : 64 );
             th = ((index+1) % rows == 0 ? h % 64 : 64 );
             tw = ( tw == 0 ? 64 : tw );
             th = ( th == 0 ? 64 : th );
-            bytes = parseTile( tptr, tw, th, bpp );
+            bytes = parseTile( tptr, tw, th, bpp, bytes );
             bytes.position = 0;
             //Main.log("got tile bytes "+bytes.length+" 1 "+bytes.readUnsignedByte());
             rect.x = (index % columns) * 64;
@@ -232,76 +234,50 @@ class ParserXCF implements IParser
         return bmd;
     }
 
-    private function parseTile( tptr:Int, w:Int, h:Int, bpp:Int ):ByteArray {
+    private function parseTile( tptr:Int, w:Int, h:Int, bpp:Int, bytes:ByteArray ):ByteArray {
         //Main.log("tile "+w+" x "+h+" bpp "+bpp); 
         data.position = tptr;
         var compressed:Bool = true;
                 
-        var bytes:ByteArray = new ByteArray(); // ARGB sequence
-        bytes.length = w*h*bpp;
         var size:Int;
         var val:Int;
         var length:Int;
-        var count:Int;
         var pos:Int = 0;
         // RLE is RGBA
         for ( s in 0...4 ) {
-            //bytes.position = (s + 1) % 4;
             pos = (s + 1) % 4;
             size = w*h;
             //Main.log("size "+size+" data pos "+data.position);
-            count = 0;
     
+            if ( bpp == 3 && s == 3 )
+                continue;
+
             while (size > 0) {
-                /*
-                if ( true ) {
-                    bytes.writeByte( 255 );
-                    bytes.position += 3;
-                    size -= 1;
-                    continue;
-                }*/
-
-                if ( bpp == 3 && s == 3 ) {
-                    //bytes.writeByte( 255 );
-                    //bytes.position += 3;
-                    bytes[ pos ] = 255;
-                    pos += 4;
-                    size -= 1;
-                    continue;
-                }                    
-
                 length = readByte();
                 if (length >= 128) {
                     length = 255 - (length - 1);
                     if (length == 128) {
-                        length = 256*readByte() + readByte();
+                        length = (readByte() << 8) + readByte();
                     }
                     size -= length;
-                    count += length;
                     while (length-- > 0) {
-                        //bytes.writeByte( readByte() );
-                        //bytes.position += 3;
                         bytes[ pos ] = readByte();
                         pos += 4;
                     }
                 } else {
                     length += 1;
                     if (length == 128) {
-                        length = 256*readByte() + readByte();
+                        length = (readByte() << 8) + readByte();
                     }
                     size -= length;
-                    count += length;
     
                     val = readByte();  
                     for ( j in 0...length) {
-                        //bytes.writeByte( val );
-                        //bytes.position += 3;
                         bytes[ pos ] = val;
                         pos += 4;
                     }
                 }
             }
-            //Main.log("final position "+bytes.position+" count "+count);
         }
         return bytes;
     }
