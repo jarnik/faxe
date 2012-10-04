@@ -20,7 +20,7 @@ class Shape extends Element
 	}
 
     override public function renderSelf():ElementSprite {        
-        var s:ElementSprite = new ElementSprite();
+        var s:ElementSprite = super.renderSelf();
         s.graphics.copyFrom( graphics );
         return s;
     }

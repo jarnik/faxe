@@ -2,10 +2,14 @@ package faxe.core;
 
 import nme.Assets;
 import nme.display.Sprite;
+import nme.geom.Rectangle;
 import nme.display.DisplayObjectContainer;
+
+import jarnik.gaxe.Gaxe;
 
 import faxe.Main;
 import faxe.model.Element;
+import faxe.model.ElementSprite;
 import faxe.model.Image;
 import faxe.parser.IParser;
 import faxe.parser.ParserSVG;
@@ -23,7 +27,10 @@ class Layout
 	}
 
     public function render(path:String = null):DisplayObjectContainer {
-        var d:DisplayObjectContainer = root.render( true );
+        var d:ElementSprite = root.render( true );
+
+        d.align( new Rectangle( 0, 0, Gaxe.w, Gaxe.h ) );
+
         return d;
     }
 

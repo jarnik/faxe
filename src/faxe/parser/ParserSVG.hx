@@ -210,17 +210,17 @@ class ParserSVG implements IParser
                          "g", "image", "rect", "text":
                         element.addChild( parseElement( e ) );
                     default:
-                        Debug.log("unimplemented child node "+e.nodeName);
+                        //Debug.log("unimplemented child node "+e.nodeName);
                 }
             }
 
         if ( Std.is( element, Shape ) ) { 
             var w:Float = cast( element, Shape ).s.width;
             var h:Float = cast( element, Shape ).s.height;
-            Debug.log( "shape "+w+"x"+h );
+            //Debug.log( "shape "+w+"x"+h );
             var ww:Float = Math.abs(element.transform.a*w) + Math.abs(element.transform.c*h);
             var hh:Float = Math.abs(element.transform.b*w) + Math.abs(element.transform.d*h);
-            Debug.log( "shape transformed "+ww+" "+hh );
+            //Debug.log( "shape transformed "+ww+" "+hh );
         }
 
         return element;
@@ -229,6 +229,5 @@ class ParserSVG implements IParser
     private function onClick(e:MouseEvent):Void {
         Debug.log("click "+e.target);
     }
-
 
 }

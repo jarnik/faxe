@@ -29,7 +29,9 @@ class Element
 	}
 
     public function renderSelf():ElementSprite {
-        return new ElementSprite();
+        var e:ElementSprite = new ElementSprite();
+        e.name = name;
+        return e;
     }
 
     public function move( x:Float, y:Float ):Void {
@@ -56,8 +58,9 @@ class Element
         children.insert( index, e );
     }
 
-    public function render( isRoot:Bool = false ):DisplayObjectContainer {
+    public function render( isRoot:Bool = false ):ElementSprite {
         var d:ElementSprite = new ElementSprite( false );
+        d.name = name+"-wrapper";
         
         var content:ElementSprite = renderSelf();        
         content.transform.matrix = transform;
@@ -67,8 +70,8 @@ class Element
             c = e.render();
             content.addChild( c );
         }
-        //Debug.log(" x "+d.x+" "+d.rotation);
 
+        Debug.log("wrapper "+name+" content "+content.name);
         d.addContent( content, !isRoot );
         return d;
     }
