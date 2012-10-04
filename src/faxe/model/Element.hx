@@ -5,9 +5,11 @@ import nme.display.Sprite;
 import nme.display.DisplayObject;
 import nme.display.DisplayObjectContainer;
 import nme.geom.Matrix;
+import nme.geom.Rectangle;
 import nme.geom.ColorTransform;
 
 import faxe.Main;
+import jarnik.gaxe.Debug;
 
 class Element
 {
@@ -15,6 +17,7 @@ class Element
     public var color:ColorTransform;
     public var children:Array<Element>;
     public var name:String;
+    public var s:Sprite;
 
 	public function new () 
 	{
@@ -25,7 +28,7 @@ class Element
         color = new ColorTransform();
 	}
 
-    public function renderSelf():DisplayObjectContainer{
+    public function renderSelf():DisplayObjectContainer {
         return new Sprite();
     }
 
@@ -53,16 +56,43 @@ class Element
         children.insert( index, e );
     }
 
-    public function render():DisplayObjectContainer {
-        var d:DisplayObjectContainer = renderSelf();
-        d.transform.matrix = transform;
-        d.transform.colorTransform = color;
+    public function render( isRoot:Bool = false ):DisplayObjectContainer {
+        var d:DisplayObjectContainer = new Sprite();
+        
+        var content:DisplayObjectContainer = renderSelf();        
+        content.transform.matrix = transform;
+        content.transform.colorTransform = color;
         var c:DisplayObject;
         for ( e in children ) {
             c = e.render();
-            d.addChild( c );
+            content.addChild( c );
         }
+        //Debug.log(" x "+d.x+" "+d.rotation);
+
+        d.addChild( content );
+
+        if ( !isRoot ) {
+            //Debug.log(" aligning "+name );
+            resetOrigin( d );
+            //Debug.log(" = "+name+" aligned to "+d.x+" "+d.y );
+        }
+
         return d;
+    }
+
+    private static function resetOrigin( element:DisplayObjectContainer ):Void {
+        var  content:DisplayObjectContainer = cast( element.getChildAt( 0 ), DisplayObjectContainer );
+        //Debug.log(" ... content x "+content.x+" rot "+content.rotation);
+        var r:Rectangle = content.getBounds( element );
+        //Debug.log(" ... bounds "+r);
+
+        element.x = r.x;
+        element.y = r.y;
+        content.x -= r.x;
+        content.y -= r.y;
+
+        //Debug.log(" ... aligned "+element.x+" "+element.y);
+        //Debug.log(" ... content "+content.x+" "+content.y);
     }
 
 }

@@ -6,11 +6,11 @@ import nme.display.DisplayObjectContainer;
 import nme.display.Graphics;
 
 import faxe.Main;
+import jarnik.gaxe.Debug;
 
 class Shape extends Element 
 {
     public var graphics:Graphics;
-    public var s:Sprite;
 
 	public function new () 
 	{

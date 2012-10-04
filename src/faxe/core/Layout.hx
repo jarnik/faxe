@@ -9,7 +9,7 @@ import faxe.model.Element;
 import faxe.model.Image;
 import faxe.parser.IParser;
 import faxe.parser.ParserSVG;
-import faxe.parser.ParserXCF;
+//import faxe.parser.ParserXCF;
 
 class Layout 
 {
@@ -23,7 +23,8 @@ class Layout
 	}
 
     public function render(path:String = null):DisplayObjectContainer {
-        return root.render();
+        var d:DisplayObjectContainer = root.render( true );
+        return d;
     }
 
 }

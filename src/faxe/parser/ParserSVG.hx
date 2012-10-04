@@ -10,6 +10,7 @@ import nme.display.DisplayObjectContainer;
 import nme.text.TextField;
 import nme.text.TextFormat;
 import nme.utils.ByteArray;
+import nme.events.MouseEvent;
 
 import jarnik.gaxe.Debug;
 
@@ -41,8 +42,8 @@ class ParserSVG implements IParser
     private function parseTransform( e:Element, xml:Xml ):Void {
         var m:Matrix = e.transform;
 
-        m.tx = Std.parseFloat( xml.get("x") );
-        m.ty = Std.parseFloat( xml.get("y") );
+        m.tx = Std.parseFloat( xml.get("x") != null ? xml.get("x") : "0" );
+        m.ty = Std.parseFloat( xml.get("y") != null ? xml.get("y") : "0" );
 
         var t:String = xml.get("transform");
         if ( t != null ) {
@@ -171,12 +172,12 @@ class ParserSVG implements IParser
         var image:Image;
         var shape:Shape;
         switch ( xml.nodeName ) {
-            case "svg:g":
+            case "svg:g", "g":
                 element = new Element(); 
-            case "svg:image":
+            case "svg:image", "image":
                 image = new Image( Assets.getBitmapData( "assets/"+xml.get("xlink:href") ) ); 
                 element = image;
-            case "svg:rect":
+            case "svg:rect", "rect":
                 //Debug.log("rect");
                 shape = new Shape(); 
                 parseShapeStyle( shape, xml.get("style") );
@@ -188,8 +189,10 @@ class ParserSVG implements IParser
                     Std.parseFloat( xml.get("rx") )*2,
                     Std.parseFloat( xml.get("ry") )*2
                 );
+                shape.s.buttonMode = true;
+                shape.s.addEventListener( MouseEvent.CLICK, onClick );
                 element = shape;
-            case "svg:text":
+            case "svg:text", "text":
                 element = parseTextNode( xml );                
             default:
                 Debug.log("unimplemented "+xml.nodeName);
@@ -203,11 +206,29 @@ class ParserSVG implements IParser
                 if ( e.nodeType != Xml.Element )
                     continue;
                 switch ( e.nodeName ) {
-                    case "svg:g", "svg:image", "svg:rect", "svg:text":
+                    case "svg:g", "svg:image", "svg:rect", "svg:text", 
+                         "g", "image", "rect", "text":
                         element.addChild( parseElement( e ) );
+                    default:
+                        Debug.log("unimplemented child node "+e.nodeName);
                 }
             }
+
+        if ( Std.is( element, Shape ) ) { 
+            var w:Float = cast( element, Shape ).s.width;
+            var h:Float = cast( element, Shape ).s.height;
+            Debug.log( "shape "+w+"x"+h );
+            var ww:Float = Math.abs(element.transform.a*w) + Math.abs(element.transform.c*h);
+            var hh:Float = Math.abs(element.transform.b*w) + Math.abs(element.transform.d*h);
+            Debug.log( "shape transformed "+ww+" "+hh );
+        }
+
         return element;
     }
+
+    private function onClick(e:MouseEvent):Void {
+        Debug.log("click "+e.target);
+    }
+
 
 }

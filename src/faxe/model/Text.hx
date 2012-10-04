@@ -11,7 +11,6 @@ import faxe.Main;
 
 class Text extends Element 
 {
-    public var s:Sprite;
     public var tf:TextField;
     public var format:TextFormat;
 
