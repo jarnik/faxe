@@ -17,13 +17,17 @@ class Text extends Element
 	public function new () 
 	{
         super();
-        s = new Sprite();
-        s.addChild( tf = new TextField() );
+        tf = new TextField();
         format = new TextFormat();
 	}
 
-    override public function renderSelf():DisplayObjectContainer {        
-        return s;
+    override public function renderSelf():ElementSprite {        
+        var _s:ElementSprite = new ElementSprite();
+        var _tf:TextField;
+        _s.addChild( _tf = new TextField() );
+        _tf.defaultTextFormat = format;
+        _tf.text = tf.text;
+        return _s;
     }
 
 }

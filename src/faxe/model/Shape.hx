@@ -19,7 +19,9 @@ class Shape extends Element
         graphics = s.graphics;
 	}
 
-    override public function renderSelf():DisplayObjectContainer {        
+    override public function renderSelf():ElementSprite {        
+        var s:ElementSprite = new ElementSprite();
+        s.graphics.copyFrom( graphics );
         return s;
     }
 

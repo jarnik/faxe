@@ -28,8 +28,8 @@ class Element
         color = new ColorTransform();
 	}
 
-    public function renderSelf():DisplayObjectContainer {
-        return new Sprite();
+    public function renderSelf():ElementSprite {
+        return new ElementSprite();
     }
 
     public function move( x:Float, y:Float ):Void {
@@ -57,9 +57,9 @@ class Element
     }
 
     public function render( isRoot:Bool = false ):DisplayObjectContainer {
-        var d:DisplayObjectContainer = new Sprite();
+        var d:ElementSprite = new ElementSprite( false );
         
-        var content:DisplayObjectContainer = renderSelf();        
+        var content:ElementSprite = renderSelf();        
         content.transform.matrix = transform;
         content.transform.colorTransform = color;
         var c:DisplayObject;
@@ -69,30 +69,8 @@ class Element
         }
         //Debug.log(" x "+d.x+" "+d.rotation);
 
-        d.addChild( content );
-
-        if ( !isRoot ) {
-            //Debug.log(" aligning "+name );
-            resetOrigin( d );
-            //Debug.log(" = "+name+" aligned to "+d.x+" "+d.y );
-        }
-
+        d.addContent( content, !isRoot );
         return d;
-    }
-
-    private static function resetOrigin( element:DisplayObjectContainer ):Void {
-        var  content:DisplayObjectContainer = cast( element.getChildAt( 0 ), DisplayObjectContainer );
-        //Debug.log(" ... content x "+content.x+" rot "+content.rotation);
-        var r:Rectangle = content.getBounds( element );
-        //Debug.log(" ... bounds "+r);
-
-        element.x = r.x;
-        element.y = r.y;
-        content.x -= r.x;
-        content.y -= r.y;
-
-        //Debug.log(" ... aligned "+element.x+" "+element.y);
-        //Debug.log(" ... content "+content.x+" "+content.y);
     }
 
 }

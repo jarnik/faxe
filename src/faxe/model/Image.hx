@@ -11,18 +11,16 @@ import faxe.Main;
 class Image extends Element
 {
     public var bitmapData:BitmapData;
-    private var bitmap:Bitmap;
 
 	public function new ( bmd:BitmapData ) 
 	{
         super();
         bitmapData = bmd;
-        bitmap = new Bitmap( bitmapData );
 	}
 
-    override public function renderSelf():DisplayObjectContainer {
-        var d:DisplayObjectContainer = super.renderSelf();
-        d.addChild( bitmap );
+    override public function renderSelf():ElementSprite {
+        var d:ElementSprite = super.renderSelf();
+        d.addChild( new Bitmap( bitmapData ) );
         return d;
     }
 
