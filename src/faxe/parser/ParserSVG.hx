@@ -5,6 +5,7 @@ import nme.display.Sprite;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.Graphics;
+import nme.geom.Matrix;
 import nme.display.DisplayObjectContainer;
 import nme.text.TextField;
 import nme.text.TextFormat;
@@ -37,20 +38,28 @@ class ParserSVG implements IParser
         //return e;
     }
 
-    private function parseTransform( e:Element, t:String ):Void {
-        if ( t == null )
-            return;
+    private function parseTransform( e:Element, xml:Xml ):Void {
+        var m:Matrix = e.transform;
 
-        var values:Array<String> = t.substr( 7 ).split(",");
-        //Debug.log("matrix "+values);
+        m.tx = Std.parseFloat( xml.get("x") );
+        m.ty = Std.parseFloat( xml.get("y") );
 
-        e.transform.a = Std.parseFloat( values[0] );
-        e.transform.b = Std.parseFloat( values[1] );
-        e.transform.c = Std.parseFloat( values[2] );
-        e.transform.d = Std.parseFloat( values[3] );
-        e.transform.tx = Std.parseFloat( values[4] );
-        e.transform.ty = Std.parseFloat( values[5] );
+        var t:String = xml.get("transform");
+        if ( t != null ) {
+            var tx:Float = m.tx;
+            var ty:Float = m.ty;
+            var values:Array<String> = t.substr( 7 ).split(",");
+            m.a = Std.parseFloat( values[0] );
+            m.b = Std.parseFloat( values[1] );
+            m.c = Std.parseFloat( values[2] );
+            m.d = Std.parseFloat( values[3] );
+            m.tx = Std.parseFloat( values[4] );
+            m.ty = Std.parseFloat( values[5] );
 
+            m.tx = tx * m.a + ty * m.c + m.tx;
+            m.ty = tx * m.b + ty * m.d + m.ty;
+        }
+        
     }
 
     private function parseStyle( style:String ):Hash<String> {
@@ -172,15 +181,14 @@ class ParserSVG implements IParser
                 shape = new Shape(); 
                 parseShapeStyle( shape, xml.get("style") );
                 shape.graphics.drawRoundRect(
-                    Std.parseFloat( xml.get("x") ),
-                    Std.parseFloat( xml.get("y") ),
+                    0,
+                    0,
                     Std.parseFloat( xml.get("width") ),
                     Std.parseFloat( xml.get("height") ),
                     Std.parseFloat( xml.get("rx") )*2,
                     Std.parseFloat( xml.get("ry") )*2
                 );
                 element = shape;
-                parseTransform( element, xml.get("transform") );
             case "svg:text":
                 element = parseTextNode( xml );                
             default:
@@ -188,6 +196,7 @@ class ParserSVG implements IParser
                 element = new Element(); 
         }
         element.name = xml.get("id");
+        parseTransform( element, xml );
 
         if ( element != null )
             for ( e in xml ) {
