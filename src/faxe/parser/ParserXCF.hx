@@ -240,7 +240,9 @@ class ParserXCF implements IParser
                 
         var bmd:BitmapData = new BitmapData( w, h, true, 0xff000000 );
         var bytes:ByteArray = new ByteArray(); // ARGB sequence
+        #if !android
         bytes.length = w*h*bpp;
+        #end
 
         var index:Int = 0;
         var tw:Int;

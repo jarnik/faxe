@@ -17,12 +17,12 @@ class Layout
 
 	public function new (path:String) 
 	{
-        //var p:IParser = new ParserSVG();
-        var p:IParser = new ParserXCF();
+        var p:IParser = new ParserSVG();
+        //var p:IParser = new ParserXCF();
         root = p.parse( Assets.getBytes( path ) );
 	}
 
-    public function render(path:String):DisplayObjectContainer {
+    public function render(path:String = null):DisplayObjectContainer {
         return root.render();
     }
 

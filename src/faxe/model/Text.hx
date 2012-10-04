@@ -4,19 +4,23 @@ import nme.Assets;
 import nme.display.Sprite;
 import nme.display.DisplayObjectContainer;
 import nme.display.Graphics;
+import nme.text.TextField;
+import nme.text.TextFormat;
 
 import faxe.Main;
 
-class Shape extends Element 
+class Text extends Element 
 {
-    public var graphics:Graphics;
     public var s:Sprite;
+    public var tf:TextField;
+    public var format:TextFormat;
 
 	public function new () 
 	{
         super();
         s = new Sprite();
-        graphics = s.graphics;
+        s.addChild( tf = new TextField() );
+        format = new TextFormat();
 	}
 
     override public function renderSelf():DisplayObjectContainer {        

@@ -132,8 +132,8 @@ class Main extends Sprite
 
         var now:Float = Lib.getTimer() / 1000;
         //var layout:Layout = FaXe.load("assets/layouts/scene.xcf");
-        var layout:Layout = FaXe.load("assets/layouts/layout.xcf");
-        //var layout:Layout = FaXe.load("assets/layouts/garage.xcf");
+        //var layout:Layout = FaXe.load("assets/layouts/layout.xcf");
+        var layout:Layout = FaXe.load("assets/layouts/garage.xcf");
         var gui:DisplayObjectContainer = layout.render("player");
         stateLayer.addChild( gui ); 
         var now2:Float = Lib.getTimer() / 1000;
