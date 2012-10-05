@@ -31,11 +31,17 @@ class Element
         alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 	}
 
-    public function renderSelf():ElementSprite {
+    public function renderContent():Sprite {
+        /*
         var e:ElementSprite = new ElementSprite();
         e.name = name;
         e.alignment = alignment;
-        return e;
+        e.transform.matrix = transform;
+        e.transform.colorTransform = color;*/
+        var s:Sprite = new Sprite();
+        s.transform.matrix = transform;
+        s.transform.colorTransform = color;
+        return s;
     }
 
     public function move( x:Float, y:Float ):Void {
@@ -63,13 +69,41 @@ class Element
     }
 
     public function render( rigidLevel:Int = 0, isRoot:Bool = false ):ElementSprite {
+
+        var e:ElementSprite = new ElementSprite( isRoot );
+        e.name = name;
+        e.alignment = alignment;
+
+        var c:Sprite = renderContent();
+
+        for ( e in children ) {
+            c.addChild( 
+                e.render( Std.int(Math.max(0,rigidLevel - 1)) ) 
+            );
+        }
+
+        e.addChild( c );
+        
+        if ( rigidLevel == 0 ) {
+            var r:Rectangle = c.getBounds( e );
+            e.x = r.x;
+            e.y = r.y;
+            c.x -= r.x;
+            c.y -= r.y;
+            e.wrapperWidth = r.width;
+            e.wrapperHeight = r.height;
+        }
+
+        return e;
+
+        /*
         var d:ElementSprite = new ElementSprite( false, isRoot );
         d.name = name+"-wrapper";
         d.alignment = alignment;
         
         var content:ElementSprite = renderSelf();        
-        content.transform.matrix = transform;
-        content.transform.colorTransform = color;
+        //content.transform.matrix = transform;
+        //content.transform.colorTransform = color;
         var c:DisplayObject;
         for ( e in children ) {
             c = e.render( Std.int(Math.max(0,rigidLevel - 1)) );
@@ -78,7 +112,7 @@ class Element
 
         Debug.log("wrapper "+name+" content "+content.name);
         d.addContent( content, rigidLevel == 0 );
-        return d;
+        return d;*/
     }
 
 }

@@ -21,8 +21,8 @@ class Text extends Element
         format = new TextFormat();
 	}
 
-    override public function renderSelf():ElementSprite {        
-        var _s:ElementSprite = new ElementSprite();
+    override public function renderContent():Sprite {        
+        var _s:Sprite = super.renderContent();
         var _tf:TextField;
         _s.addChild( _tf = new TextField() );
         _tf.defaultTextFormat = format;

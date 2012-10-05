@@ -44,10 +44,9 @@ class ElementSprite extends Sprite
     public var wrapperWidth:Float;
     public var wrapperHeight:Float;
 
-    public var isContentNode:Bool;
-    public var content:ElementSprite;
+    public var content:Sprite;
 
-	public function new ( isContentNode:Bool = true, isRootNode:Bool = false ) 
+	public function new ( isRootNode:Bool = false ) 
 	{
         super();
         
@@ -56,7 +55,6 @@ class ElementSprite extends Sprite
         marginTop = 0;
         marginBottom = 0;
 
-        this.isContentNode = isContentNode;
         alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 
         if ( isRootNode )
@@ -64,6 +62,7 @@ class ElementSprite extends Sprite
 	}
 
     public function align( r:Rectangle = null ):Void {
+        /*
         if ( isContentNode ) {
             r.x -= x;
             r.y -= y;
@@ -102,7 +101,7 @@ class ElementSprite extends Sprite
             r.height = Math.isNaN( wrapperHeight ) ? r.height : wrapperHeight;
             //Debug.log(name+" sending to content area "+r);
             content.align( r );
-        }
+        }*/
     }
     
     public function addContent( _content:ElementSprite, allowResetOrigin:Bool = true ):Void {
@@ -111,6 +110,12 @@ class ElementSprite extends Sprite
 
         if ( allowResetOrigin )
             resetOrigin();
+    }
+
+    public function fetch( path:String ):ElementSprite {
+        var e:ElementSprite = null;
+
+        return e;
     }
    
     private function resetOrigin():Void {
@@ -139,7 +144,7 @@ class ElementSprite extends Sprite
 
     private function onResize( e:Event = null ):Void {
         Debug.log("Resizing "+name);
-        align( new Rectangle( 0, 0, stage.stageWidth, stage.stageHeight ) );
+        //align( new Rectangle( 0, 0, stage.stageWidth, stage.stageHeight ) );
     }
 
 

@@ -18,10 +18,10 @@ class Image extends Element
         bitmapData = bmd;
 	}
 
-    override public function renderSelf():ElementSprite {
-        var d:ElementSprite = super.renderSelf();
-        d.addChild( new Bitmap( bitmapData ) );
-        return d;
+    override public function renderContent():Sprite {
+        var s:Sprite = super.renderContent();
+        s.addChild( new Bitmap( bitmapData ) );
+        return s;
     }
 
 }
