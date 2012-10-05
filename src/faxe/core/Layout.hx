@@ -2,10 +2,12 @@ package faxe.core;
 
 import nme.Assets;
 import nme.display.Sprite;
+import nme.events.MouseEvent;
 import nme.geom.Rectangle;
 import nme.display.DisplayObjectContainer;
 
 import jarnik.gaxe.Gaxe;
+import jarnik.gaxe.Debug;
 
 import faxe.Main;
 import faxe.model.Element;
@@ -30,7 +32,16 @@ class Layout
     public function render(path:String = null):DisplayObjectContainer {
         var d:ElementSprite = root.render( 2, true );
 
+        var e:ElementSprite = d.fetch("layer3.rect.box1");
+        e.alignment.h = ALIGN_H_LEFT;
+        e.onClick( clickTest );
+        Debug.log("fetched "+e);
+
         return d;
+    }
+
+    public function clickTest( e:MouseEvent = null ):Void {
+        Debug.log("CLICKED!");
     }
 
 }

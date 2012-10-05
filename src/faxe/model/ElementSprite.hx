@@ -8,6 +8,7 @@ import nme.geom.Matrix;
 import nme.geom.Rectangle;
 import nme.geom.ColorTransform;
 import nme.events.Event;
+import nme.events.MouseEvent;
 
 import faxe.Main;
 import jarnik.gaxe.Debug;
@@ -46,6 +47,8 @@ class ElementSprite extends Sprite
 
     public var content:Sprite;
 
+    public var kids:Hash<ElementSprite>;
+
 	public function new ( isRootNode:Bool = false ) 
 	{
         super();
@@ -54,6 +57,8 @@ class ElementSprite extends Sprite
         marginRight = 0;
         marginTop = 0;
         marginBottom = 0;
+
+        kids = new Hash<ElementSprite>();
 
         alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 
@@ -105,6 +110,15 @@ class ElementSprite extends Sprite
         content = _content;
         addChild( content );
 
+        var e:ElementSprite;
+        for ( i in 0...content.numChildren ) {
+            if ( Std.is( content.getChildAt( i ), ElementSprite ) ) {
+                e = cast( content.getChildAt( i ), ElementSprite );
+                kids.set( e.name, e );
+                Debug.log("found kid "+e.name+" "+e);
+            }
+        }
+
         if ( allowResetOrigin ) {
             var r:Rectangle = content.getBounds( this );
             x = r.x;
@@ -119,7 +133,24 @@ class ElementSprite extends Sprite
     public function fetch( path:String ):ElementSprite {
         var e:ElementSprite = null;
 
-        return e;
+        var pathElements:Array<String> = path.split("."); 
+
+        var kid:ElementSprite = kids.get( pathElements[0] );
+                
+        Debug.log("fetching kid "+pathElements[0]+" > "+kid);
+
+        if ( kid == null )
+            return null;
+
+        if ( pathElements.length == 1 )
+            return kid;
+
+        return kid.fetch( path.substr( path.indexOf(".")+1 ) );
+    }
+
+    public function onClick( _callback:Dynamic = null ):Void {
+        content.buttonMode = true;
+        content.addEventListener( MouseEvent.CLICK, _callback );
     }
   
     private function onAddedToStage( e:Event ):Void {        

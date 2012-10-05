@@ -167,6 +167,13 @@ class ParserSVG implements IParser
         return e;
     }
 
+    private function parseName( name:String ):String {
+        var r:EReg = ~/([^\[]*)/;
+        if ( !r.match( name ) )
+            return name;
+        return r.matched( 1 );
+    }
+
     private function parseAlign( id:String ):AlignConfig {
         var align:AlignConfig = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 
@@ -223,8 +230,9 @@ class ParserSVG implements IParser
                 Debug.log("unimplemented "+xml.nodeName);
                 element = new Element(); 
         }
-        element.name = xml.get("id");
         element.alignment = parseAlign( xml.get("id") );
+        element.name = parseName( xml.get("id") );
+        //Debug.log("parsed name "+xml.get("id")+" "+element.name);
         parseTransform( element, xml );
 
         if ( element != null )
