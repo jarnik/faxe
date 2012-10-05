@@ -9,6 +9,7 @@ import nme.geom.Rectangle;
 import nme.geom.ColorTransform;
 
 import faxe.Main;
+import faxe.model.ElementSprite;
 import jarnik.gaxe.Debug;
 
 class Element
@@ -18,6 +19,7 @@ class Element
     public var children:Array<Element>;
     public var name:String;
     public var s:Sprite;
+    public var alignment:AlignConfig;
 
 	public function new () 
 	{
@@ -26,11 +28,13 @@ class Element
         transform = new Matrix();
         transform.identity();
         color = new ColorTransform();
+        alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 	}
 
     public function renderSelf():ElementSprite {
         var e:ElementSprite = new ElementSprite();
         e.name = name;
+        e.alignment = alignment;
         return e;
     }
 
@@ -61,6 +65,7 @@ class Element
     public function render( isRoot:Bool = false ):ElementSprite {
         var d:ElementSprite = new ElementSprite( false );
         d.name = name+"-wrapper";
+        d.alignment = alignment;
         
         var content:ElementSprite = renderSelf();        
         content.transform.matrix = transform;

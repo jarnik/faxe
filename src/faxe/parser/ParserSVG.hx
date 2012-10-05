@@ -15,6 +15,7 @@ import nme.events.MouseEvent;
 import jarnik.gaxe.Debug;
 
 import faxe.model.Element;
+import faxe.model.ElementSprite;
 import faxe.model.Image;
 import faxe.model.Shape;
 import faxe.model.Text;
@@ -166,6 +167,30 @@ class ParserSVG implements IParser
         return e;
     }
 
+    private function parseAlign( id:String ):AlignConfig {
+        var align:AlignConfig = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
+
+        var r:EReg = ~/.*\[([A-Za-z])\]/;
+        if ( r.match( id ) ) {
+            var cfg:String = r.matched(1).toUpperCase();
+            Debug.log("align: "+cfg);
+            if ( cfg.indexOf("R") != -1 )
+                align.h = ALIGN_H_RIGHT;
+            if ( cfg.indexOf("L") != -1 )
+                align.h = ALIGN_H_LEFT;
+            if ( cfg.indexOf("HC") != -1 )
+                align.h = ALIGN_H_CENTER;
+            if ( cfg.indexOf("T") != -1 )
+                align.v = ALIGN_V_TOP;
+            if ( cfg.indexOf("B") != -1 )
+                align.v = ALIGN_V_BOTTOM;
+            if ( cfg.indexOf("VC") != -1 )
+                align.v = ALIGN_V_CENTER;
+        }
+
+        return align;
+    }
+
     private function parseElement( xml:Xml ):Element {        
         var element:Element = null;
 
@@ -199,6 +224,7 @@ class ParserSVG implements IParser
                 element = new Element(); 
         }
         element.name = xml.get("id");
+        element.alignment = parseAlign( xml.get("id") );
         parseTransform( element, xml );
 
         if ( element != null )

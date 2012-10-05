@@ -15,6 +15,7 @@ enum ALIGN_H {
     ALIGN_H_NONE;
     ALIGN_H_LEFT;
     ALIGN_H_RIGHT;
+    ALIGN_H_CENTER;
     ALIGN_H_STRETCH;
 }
 
@@ -22,7 +23,13 @@ enum ALIGN_V {
     ALIGN_V_NONE;
     ALIGN_V_TOP;
     ALIGN_V_BOTTOM;
+    ALIGN_V_CENTER;
     ALIGN_V_STRETCH;
+}
+
+typedef AlignConfig = {
+    h:ALIGN_H,
+    v:ALIGN_V
 }
 
 class ElementSprite extends Sprite
@@ -32,8 +39,7 @@ class ElementSprite extends Sprite
     public var marginRight:Float;
     public var marginTop:Float;
     public var marginBottom:Float;
-    public var alignH:ALIGN_H;
-    public var alignV:ALIGN_V;
+    public var alignment:AlignConfig;
 
     public var isContentNode:Bool;
     public var content:ElementSprite;
@@ -47,10 +53,8 @@ class ElementSprite extends Sprite
         marginTop = 0;
         marginBottom = 0;
 
-        alignH = ALIGN_H_NONE;
-        alignV = ALIGN_V_NONE;
-
         this.isContentNode = isContentNode;
+        alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 	}
 
     public function align( r:Rectangle = null ):Void {
@@ -63,6 +67,7 @@ class ElementSprite extends Sprite
                     cast( getChildAt( i ), ElementSprite ).align( r.clone() );
             }
         } else {
+            Debug.log(name+" align CFG "+alignment);
             var dx:Float = (x - r.x);
             Debug.log(name+" aligning myself to "+0+" within "+r);
             r.width -= dx;
