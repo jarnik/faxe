@@ -32,12 +32,6 @@ class Element
 	}
 
     public function renderContent():Sprite {
-        /*
-        var e:ElementSprite = new ElementSprite();
-        e.name = name;
-        e.alignment = alignment;
-        e.transform.matrix = transform;
-        e.transform.colorTransform = color;*/
         var s:Sprite = new Sprite();
         s.transform.matrix = transform;
         s.transform.colorTransform = color;

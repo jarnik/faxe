@@ -62,46 +62,43 @@ class ElementSprite extends Sprite
 	}
 
     public function align( r:Rectangle = null ):Void {
-        /*
-        if ( isContentNode ) {
-            r.x -= x;
-            r.y -= y;
-            //Debug.log(name+" aligning kids to "+r);
-            for ( i in 0...numChildren ) {
-                if ( Std.is( getChildAt( i ), ElementSprite ) )
-                    cast( getChildAt( i ), ElementSprite ).align( r.clone() );
-            }
-        } else {
-            //Debug.log(name+" align CFG "+alignment);
+        // TODO when parent is transformed, alignment goes wild
 
-            switch ( alignment.h ) {
-                case ALIGN_H_LEFT:
-                    x = r.x;
-                case ALIGN_H_RIGHT:
-                    x = r.x + r.width - wrapperWidth;
-                case ALIGN_H_CENTER:
-                    x = r.x + (r.width - wrapperWidth) / 2;
-                default:
-            }
 
-            switch ( alignment.v ) {
-                case ALIGN_V_TOP:
-                    y = r.y;
-                case ALIGN_V_BOTTOM:
-                    y = r.y + r.height - wrapperHeight;
-                case ALIGN_V_CENTER:
-                    y = r.y + (r.height - wrapperHeight) / 2;
-                default:                    
-            }
-            //Debug.log(name+" aligning myself to "+x+" within "+r);
+        //Debug.log(name+" align CFG "+alignment);
+        switch ( alignment.h ) {
+            case ALIGN_H_LEFT:
+                x = r.x;
+            case ALIGN_H_RIGHT:
+                x = r.x + r.width - wrapperWidth;
+            case ALIGN_H_CENTER:
+                x = r.x + (r.width - wrapperWidth) / 2;
+            default:
+        }
 
-            //r = getBounds( parent );
-            r.x = 0; r.y = 0;
-            r.width = Math.isNaN( wrapperWidth ) ? r.width : wrapperWidth;
-            r.height = Math.isNaN( wrapperHeight ) ? r.height : wrapperHeight;
-            //Debug.log(name+" sending to content area "+r);
-            content.align( r );
-        }*/
+        switch ( alignment.v ) {
+            case ALIGN_V_TOP:
+                y = r.y;
+            case ALIGN_V_BOTTOM:
+                y = r.y + r.height - wrapperHeight;
+            case ALIGN_V_CENTER:
+                y = r.y + (r.height - wrapperHeight) / 2;
+            default:                    
+        }
+        //Debug.log(name+" aligning myself to "+x+" within "+r);
+
+        r.x = 0; r.y = 0;
+        r.width = Math.isNaN( wrapperWidth ) ? r.width : wrapperWidth;
+        r.height = Math.isNaN( wrapperHeight ) ? r.height : wrapperHeight;
+        //Debug.log(name+" sending to content area "+r);
+
+        r.x -= content.x;
+        r.y -= content.y;
+        //Debug.log(name+" aligning kids to "+r);
+        for ( i in 0...content.numChildren ) {
+            if ( Std.is( content.getChildAt( i ), ElementSprite ) )
+                cast( content.getChildAt( i ), ElementSprite ).align( r.clone() );
+        }
     }
     
     public function addContent( _content:Sprite, allowResetOrigin:Bool = true ):Void {
