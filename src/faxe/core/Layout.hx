@@ -27,7 +27,7 @@ class Layout
 	}
 
     public function render(path:String = null):DisplayObjectContainer {
-        var d:ElementSprite = root.render( true );
+        var d:ElementSprite = root.render( 2 );
 
         d.align( new Rectangle( 0, 0, Gaxe.w, Gaxe.h ) );
 

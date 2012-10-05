@@ -40,6 +40,8 @@ class ElementSprite extends Sprite
     public var marginTop:Float;
     public var marginBottom:Float;
     public var alignment:AlignConfig;
+    public var wrapperWidth:Float;
+    public var wrapperHeight:Float;
 
     public var isContentNode:Bool;
     public var content:ElementSprite;
@@ -68,12 +70,22 @@ class ElementSprite extends Sprite
             }
         } else {
             Debug.log(name+" align CFG "+alignment);
-            var dx:Float = (x - r.x);
-            Debug.log(name+" aligning myself to "+0+" within "+r);
-            r.width -= dx;
-            x -= dx;
+
+            switch ( alignment.h ) {
+                case ALIGN_H_LEFT:
+                    x = r.x;
+                case ALIGN_H_RIGHT:
+                    x = r.x + r.width - wrapperWidth;
+                case ALIGN_H_CENTER:
+                    x = r.x + (r.width - wrapperWidth) / 2;
+                default:                    
+            }
+            Debug.log(name+" aligning myself to "+x+" within "+r);
+
             //r = getBounds( parent );
             r.x = 0; r.y = 0;
+            r.width = Math.isNaN( wrapperWidth ) ? r.width : wrapperWidth;
+            r.height = Math.isNaN( wrapperHeight ) ? r.height : wrapperHeight;
             Debug.log(name+" sending to content area "+r);
             content.align( r );
         }
@@ -97,6 +109,9 @@ class ElementSprite extends Sprite
         y = r.y;
         content.x -= r.x;
         content.y -= r.y;
+
+        wrapperWidth = r.width;
+        wrapperHeight = r.height;
 
         Debug.log(" ... wrapper within ist parent will be "+x+" "+y);
         Debug.log(" ... content within wrapper will be "+content.x+" "+content.y);

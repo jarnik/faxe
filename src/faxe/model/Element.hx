@@ -62,7 +62,7 @@ class Element
         children.insert( index, e );
     }
 
-    public function render( isRoot:Bool = false ):ElementSprite {
+    public function render( rigidLevel:Int = 0 ):ElementSprite {
         var d:ElementSprite = new ElementSprite( false );
         d.name = name+"-wrapper";
         d.alignment = alignment;
@@ -72,12 +72,12 @@ class Element
         content.transform.colorTransform = color;
         var c:DisplayObject;
         for ( e in children ) {
-            c = e.render();
+            c = e.render( Std.int(Math.max(0,rigidLevel - 1)) );
             content.addChild( c );
         }
 
         Debug.log("wrapper "+name+" content "+content.name);
-        d.addContent( content, !isRoot );
+        d.addContent( content, rigidLevel == 0 );
         return d;
     }
 

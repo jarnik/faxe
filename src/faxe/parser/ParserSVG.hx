@@ -170,7 +170,7 @@ class ParserSVG implements IParser
     private function parseAlign( id:String ):AlignConfig {
         var align:AlignConfig = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 
-        var r:EReg = ~/.*\[([A-Za-z])\]/;
+        var r:EReg = ~/.*\[([A-Za-z]*)\]/;
         if ( r.match( id ) ) {
             var cfg:String = r.matched(1).toUpperCase();
             Debug.log("align: "+cfg);
