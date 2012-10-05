@@ -7,6 +7,7 @@ import nme.display.DisplayObjectContainer;
 import nme.geom.Matrix;
 import nme.geom.Rectangle;
 import nme.geom.ColorTransform;
+import nme.events.Event;
 
 import faxe.Main;
 import jarnik.gaxe.Debug;
@@ -46,7 +47,7 @@ class ElementSprite extends Sprite
     public var isContentNode:Bool;
     public var content:ElementSprite;
 
-	public function new ( isContentNode:Bool = true ) 
+	public function new ( isContentNode:Bool = true, isRootNode:Bool = false ) 
 	{
         super();
         
@@ -57,19 +58,22 @@ class ElementSprite extends Sprite
 
         this.isContentNode = isContentNode;
         alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
+
+        if ( isRootNode )
+            addEventListener( Event.ADDED_TO_STAGE, onAddedToStage );
 	}
 
     public function align( r:Rectangle = null ):Void {
         if ( isContentNode ) {
             r.x -= x;
             r.y -= y;
-            Debug.log(name+" aligning kids to "+r);
+            //Debug.log(name+" aligning kids to "+r);
             for ( i in 0...numChildren ) {
                 if ( Std.is( getChildAt( i ), ElementSprite ) )
                     cast( getChildAt( i ), ElementSprite ).align( r.clone() );
             }
         } else {
-            Debug.log(name+" align CFG "+alignment);
+            //Debug.log(name+" align CFG "+alignment);
 
             switch ( alignment.h ) {
                 case ALIGN_H_LEFT:
@@ -78,15 +82,25 @@ class ElementSprite extends Sprite
                     x = r.x + r.width - wrapperWidth;
                 case ALIGN_H_CENTER:
                     x = r.x + (r.width - wrapperWidth) / 2;
+                default:
+            }
+
+            switch ( alignment.v ) {
+                case ALIGN_V_TOP:
+                    y = r.y;
+                case ALIGN_V_BOTTOM:
+                    y = r.y + r.height - wrapperHeight;
+                case ALIGN_V_CENTER:
+                    y = r.y + (r.height - wrapperHeight) / 2;
                 default:                    
             }
-            Debug.log(name+" aligning myself to "+x+" within "+r);
+            //Debug.log(name+" aligning myself to "+x+" within "+r);
 
             //r = getBounds( parent );
             r.x = 0; r.y = 0;
             r.width = Math.isNaN( wrapperWidth ) ? r.width : wrapperWidth;
             r.height = Math.isNaN( wrapperHeight ) ? r.height : wrapperHeight;
-            Debug.log(name+" sending to content area "+r);
+            //Debug.log(name+" sending to content area "+r);
             content.align( r );
         }
     }
@@ -100,10 +114,10 @@ class ElementSprite extends Sprite
     }
    
     private function resetOrigin():Void {
-        Debug.log(" resetting origin for content "+content.name+" within wrapper ");
-        Debug.log(" ... content x "+content.x+" rot "+content.rotation);
+        //Debug.log(" resetting origin for content "+content.name+" within wrapper ");
+        //Debug.log(" ... content x "+content.x+" rot "+content.rotation);
         var r:Rectangle = content.getBounds( this );
-        Debug.log(" ... bounds of content within wrapper "+r);
+        //Debug.log(" ... bounds of content within wrapper "+r);
 
         x = r.x;
         y = r.y;
@@ -113,8 +127,20 @@ class ElementSprite extends Sprite
         wrapperWidth = r.width;
         wrapperHeight = r.height;
 
-        Debug.log(" ... wrapper within ist parent will be "+x+" "+y);
-        Debug.log(" ... content within wrapper will be "+content.x+" "+content.y);
+        //Debug.log(" ... wrapper within ist parent will be "+x+" "+y);
+        //Debug.log(" ... content within wrapper will be "+content.x+" "+content.y);
     }
+
+    private function onAddedToStage( e:Event ):Void {        
+        Debug.log("added to stage "+name);
+        stage.addEventListener( Event.RESIZE, onResize );
+        onResize();
+    }
+
+    private function onResize( e:Event = null ):Void {
+        Debug.log("Resizing "+name);
+        align( new Rectangle( 0, 0, stage.stageWidth, stage.stageHeight ) );
+    }
+
 
 }

@@ -18,6 +18,7 @@ import faxe.parser.ParserSVG;
 class Layout 
 {
     public var root:Element;
+    public var d:ElementSprite;
 
 	public function new (path:String) 
 	{
@@ -27,9 +28,7 @@ class Layout
 	}
 
     public function render(path:String = null):DisplayObjectContainer {
-        var d:ElementSprite = root.render( 2 );
-
-        d.align( new Rectangle( 0, 0, Gaxe.w, Gaxe.h ) );
+        var d:ElementSprite = root.render( 2, true );
 
         return d;
     }

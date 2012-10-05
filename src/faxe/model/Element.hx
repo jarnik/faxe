@@ -62,8 +62,8 @@ class Element
         children.insert( index, e );
     }
 
-    public function render( rigidLevel:Int = 0 ):ElementSprite {
-        var d:ElementSprite = new ElementSprite( false );
+    public function render( rigidLevel:Int = 0, isRoot:Bool = false ):ElementSprite {
+        var d:ElementSprite = new ElementSprite( false, isRoot );
         d.name = name+"-wrapper";
         d.alignment = alignment;
         
