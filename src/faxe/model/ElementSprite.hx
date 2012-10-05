@@ -104,12 +104,19 @@ class ElementSprite extends Sprite
         }*/
     }
     
-    public function addContent( _content:ElementSprite, allowResetOrigin:Bool = true ):Void {
+    public function addContent( _content:Sprite, allowResetOrigin:Bool = true ):Void {
         content = _content;
         addChild( content );
 
-        if ( allowResetOrigin )
-            resetOrigin();
+        if ( allowResetOrigin ) {
+            var r:Rectangle = content.getBounds( this );
+            x = r.x;
+            y = r.y;
+            content.x -= r.x;
+            content.y -= r.y;
+            wrapperWidth = r.width;
+            wrapperHeight = r.height;
+        }
     }
 
     public function fetch( path:String ):ElementSprite {
@@ -117,25 +124,7 @@ class ElementSprite extends Sprite
 
         return e;
     }
-   
-    private function resetOrigin():Void {
-        //Debug.log(" resetting origin for content "+content.name+" within wrapper ");
-        //Debug.log(" ... content x "+content.x+" rot "+content.rotation);
-        var r:Rectangle = content.getBounds( this );
-        //Debug.log(" ... bounds of content within wrapper "+r);
-
-        x = r.x;
-        y = r.y;
-        content.x -= r.x;
-        content.y -= r.y;
-
-        wrapperWidth = r.width;
-        wrapperHeight = r.height;
-
-        //Debug.log(" ... wrapper within ist parent will be "+x+" "+y);
-        //Debug.log(" ... content within wrapper will be "+content.x+" "+content.y);
-    }
-
+  
     private function onAddedToStage( e:Event ):Void {        
         Debug.log("added to stage "+name);
         stage.addEventListener( Event.RESIZE, onResize );
@@ -144,7 +133,7 @@ class ElementSprite extends Sprite
 
     private function onResize( e:Event = null ):Void {
         Debug.log("Resizing "+name);
-        //align( new Rectangle( 0, 0, stage.stageWidth, stage.stageHeight ) );
+        align( new Rectangle( 0, 0, stage.stageWidth, stage.stageHeight ) );
     }
 
 
