@@ -20,6 +20,7 @@ class Element
     public var name:String;
     public var s:Sprite;
     public var alignment:AlignConfig;
+    public var fixedSize:Rectangle;
 
 	public function new () 
 	{
@@ -62,7 +63,10 @@ class Element
         children.insert( index, e );
     }
 
-    public function render( rigidLevel:Int = 0, isRoot:Bool = false ):ElementSprite {
+    public function render( isRoot:Bool = false, _parentSize:Rectangle = null ):ElementSprite {
+
+        if ( fixedSize != null && _parentSize != null )
+            fixedSize = _parentSize;
 
         var e:ElementSprite = new ElementSprite( isRoot );
         e.name = name;
@@ -72,11 +76,11 @@ class Element
 
         for ( e in children ) {
             c.addChild( 
-                e.render( Std.int(Math.max(0,rigidLevel - 1)) ) 
+                e.render( false, fixedSize ) 
             );
         }
 
-        e.addContent( c, rigidLevel == 0 );
+        e.addContent( c, fixedSize );
 
         return e;
     }

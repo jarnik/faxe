@@ -30,12 +30,13 @@ class Layout
 	}
 
     public function render(path:String = null):DisplayObjectContainer {
-        var d:ElementSprite = root.render( 2, true );
+        var d:ElementSprite = root.render( true );
 
-        var e:ElementSprite = d.fetch("layer3.rect.box1");
-        e.alignment.h = ALIGN_H_LEFT;
+        /*
+        var e:ElementSprite = d.fetch("layer3.rect.rect3000");
+        //e.alignment.h = ALIGN_H_LEFT;
         e.onClick( clickTest );
-        Debug.log("fetched "+e);
+        Debug.log("fetched "+e);*/
 
         return d;
     }

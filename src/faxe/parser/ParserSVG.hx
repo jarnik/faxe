@@ -6,6 +6,7 @@ import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.Graphics;
 import nme.geom.Matrix;
+import nme.geom.Rectangle;
 import nme.display.DisplayObjectContainer;
 import nme.text.TextField;
 import nme.text.TextFormat;
@@ -167,7 +168,6 @@ class ParserSVG implements IParser
             switch ( k ) {
                 case "opacity": opacity = Std.parseFloat( v );
                 case "fill": fill = Std.parseInt( "0x"+v.substr(1) );
-                    Debug.log("in fill "+v);
                 case "fill-opacity": fill_opacity = Std.parseFloat( v );
                 case "font-size": font_size = Std.parseFloat( v.substr(0,-2) );
             }
@@ -196,7 +196,7 @@ class ParserSVG implements IParser
         var r:EReg = ~/.*\[([A-Za-z]*)\]/;
         if ( r.match( id ) ) {
             var cfg:String = r.matched(1).toUpperCase();
-            Debug.log("align: "+cfg);
+            //Debug.log("align: "+cfg);
             if ( cfg.indexOf("R") != -1 )
                 align.h = ALIGN_H_RIGHT;
             if ( cfg.indexOf("L") != -1 )
@@ -214,6 +214,18 @@ class ParserSVG implements IParser
         return align;
     }
 
+    private function parseSize( element:Element, xml:Xml ):Void {
+        if ( 
+            xml.nodeName == "svg" || xml.nodeName == "svg:svg" || 
+            xml.get("inkscape:groupmode") == "layer"
+        ) {
+            //Debug.log(" setting fixed size for "+xml.get("id"));
+            element.fixedSize = new Rectangle( 0, 0,
+                Std.parseFloat( xml.get("width") ), Std.parseFloat( xml.get("height") )
+            );
+        }
+    }
+
     private function parseElement( xml:Xml ):Element {        
         var element:Element = null;
 
@@ -222,6 +234,7 @@ class ParserSVG implements IParser
         switch ( xml.nodeName ) {
             case "svg:g", "g":
                 element = new Element(); 
+                parseSize( element, xml );
             case "svg:image", "image":
                 image = new Image( Assets.getBitmapData( "assets/"+xml.get("xlink:href") ) ); 
                 element = image;
@@ -243,6 +256,9 @@ class ParserSVG implements IParser
                 element = shape;
             case "svg:text", "text", "svg:flowRoot", "flowRoot":
                 element = parseTextNode( xml );                
+            case "svg:svg", "svg":
+                element = new Element();
+                parseSize( element, xml );
             default:
                 Debug.log("unimplemented "+xml.nodeName);
                 element = new Element(); 
