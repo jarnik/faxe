@@ -26,7 +26,22 @@ class Text extends Element
         var _tf:TextField;
         _s.addChild( _tf = new TextField() );
         _tf.defaultTextFormat = format;
+        _tf.multiline = tf.multiline;
         _tf.text = tf.text;
+        _tf.alpha = tf.alpha;
+        _tf.embedFonts = true;
+        _tf.selectable = false;
+
+        if ( !_tf.multiline ) {
+            _tf.width = _tf.textWidth;
+            _tf.height = _tf.textHeight;
+            _tf.y -= _tf.textHeight - 5;
+        } else { 
+            _tf.width = tf.width;
+            _tf.height = tf.height;
+            _tf.y -= 5;
+        }
+
         return _s;
     }
 

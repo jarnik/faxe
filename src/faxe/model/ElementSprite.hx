@@ -137,7 +137,7 @@ class ElementSprite extends Sprite
 
         var kid:ElementSprite = kids.get( pathElements[0] );
                 
-        Debug.log("fetching kid "+pathElements[0]+" > "+kid);
+        //Debug.log("fetching kid "+pathElements[0]+" > "+kid);
 
         if ( kid == null )
             return null;

@@ -33,11 +33,7 @@ class ParserSVG implements IParser
                 root = ee;
         }
 
-        //var e:Element = new Element();
-        //e.name = "kokodac "+root.get("width")+" x "+root.get("height");
-
         return parseElement( root );
-        //return e;
     }
 
     private function parseTransform( e:Element, xml:Xml ):Void {
@@ -46,22 +42,36 @@ class ParserSVG implements IParser
         m.tx = Std.parseFloat( xml.get("x") != null ? xml.get("x") : "0" );
         m.ty = Std.parseFloat( xml.get("y") != null ? xml.get("y") : "0" );
 
+        if ( xml.nodeName.indexOf("flow") != -1 ) {
+            m.tx = Std.parseFloat( xml.firstChild().firstChild().get("x") );
+            m.ty = Std.parseFloat( xml.firstChild().firstChild().get("y") );
+        }
+
         var t:String = xml.get("transform");
         if ( t != null ) {
-            var tx:Float = m.tx;
-            var ty:Float = m.ty;
-            var values:Array<String> = t.substr( 7 ).split(",");
-            m.a = Std.parseFloat( values[0] );
-            m.b = Std.parseFloat( values[1] );
-            m.c = Std.parseFloat( values[2] );
-            m.d = Std.parseFloat( values[3] );
-            m.tx = Std.parseFloat( values[4] );
-            m.ty = Std.parseFloat( values[5] );
-
-            m.tx = tx * m.a + ty * m.c + m.tx;
-            m.ty = tx * m.b + ty * m.d + m.ty;
+            var r:EReg = ~/(matrix|translate)\(([-0-9.,]*)\)/;
+            if ( r.match( t ) ) {
+                var values:Array<String> = r.matched(2).split(",");
+                switch ( r.matched(1) ) {
+                    case "matrix":
+                        var tx:Float = m.tx;
+                        var ty:Float = m.ty;
+                        m.a = Std.parseFloat( values[ 0 ] );
+                        m.b = Std.parseFloat( values[ 1 ] );
+                        m.c = Std.parseFloat( values[ 2 ] );
+                        m.d = Std.parseFloat( values[ 3 ] );
+                        m.tx = Std.parseFloat(values[ 4 ] );
+                        m.ty = Std.parseFloat(values[ 5 ] );
+                        m.tx = tx * m.a + ty * m.c + m.tx;
+                        m.ty = tx * m.b + ty * m.d + m.ty;            
+                    case "translate":
+                        m.tx = Std.parseFloat( values[ 0 ] ) + m.tx;
+                        m.ty = Std.parseFloat( values[ 1 ] ) + m.ty;
+                }
+            } else {
+                Debug.log("transform type not matched!");
+            }
         }
-        
     }
 
     private function parseStyle( style:String ):Hash<String> {
@@ -99,7 +109,7 @@ class ParserSVG implements IParser
                 case "opacity": opacity = Std.parseFloat( v );
                 case "fill": setFill = true; fill = Std.parseInt( "0x"+v.substr(1) );
                 case "fill-opacity": fill_opacity = Std.parseFloat( v );
-                case "stroke": setStroke = true; stroke = Std.parseInt( "0x"+v.substr(1) );
+                case "stroke": setStroke = ( v != "none" ); stroke = Std.parseInt( "0x"+v.substr(1) );
                 case "stroke-width": stroke_width = Std.parseFloat( v );
                 case "stroke-opacity": stroke_opacity = Std.parseFloat( v );
             }
@@ -123,16 +133,22 @@ class ParserSVG implements IParser
         var tf:TextField = e.tf;
         var format:TextFormat = e.format;
     
-        e.transform.tx = Std.parseFloat( xml.get("x") );
-        e.transform.ty = Std.parseFloat( xml.get("y") );
+        if ( xml.nodeName.indexOf("flow") != -1 ) {
+            e.tf.multiline = true;
+            e.tf.width = Std.parseFloat( xml.firstChild().firstChild().get("width") );
+            e.tf.height = Std.parseFloat( xml.firstChild().firstChild().get("height") );
+        }
 
         var text:String = "";
         for ( e in xml ) {
             if ( e.nodeType != Xml.Element )
                 continue;
             switch ( e.nodeName ) {
-                case "svg:tspan":
-                    text += e.firstChild().toString();
+                case "svg:tspan", "tspan", "svg:flowPara", "flowPara":
+                    if ( e.firstChild() != null ) {
+                        text += ( text != "" ? "\n": "" );
+                        text += e.firstChild().toString();
+                    }
             }
         }
 
@@ -143,6 +159,7 @@ class ParserSVG implements IParser
         var fill_opacity:Float = 1;
 
         var font_size:Float = 14;
+        var font_family:String = "system";
         
         var v:String;
         for ( k in vals.keys() ) {
@@ -150,6 +167,7 @@ class ParserSVG implements IParser
             switch ( k ) {
                 case "opacity": opacity = Std.parseFloat( v );
                 case "fill": fill = Std.parseInt( "0x"+v.substr(1) );
+                    Debug.log("in fill "+v);
                 case "fill-opacity": fill_opacity = Std.parseFloat( v );
                 case "font-size": font_size = Std.parseFloat( v.substr(0,-2) );
             }
@@ -157,12 +175,10 @@ class ParserSVG implements IParser
         
         format.size = font_size;
         format.color = fill;
+        format.font = Assets.getFont("assets/fonts/nokiafc22.ttf").fontName;
+        //Debug.log("text "+text+" fill "+fill);
         tf.alpha = opacity;        
-
-        tf.defaultTextFormat = format;
-        
         tf.text = text;
-
 
         return e;
     }
@@ -213,18 +229,19 @@ class ParserSVG implements IParser
                 //Debug.log("rect");
                 shape = new Shape(); 
                 parseShapeStyle( shape, xml.get("style") );
-                shape.graphics.drawRoundRect(
-                    0,
-                    0,
-                    Std.parseFloat( xml.get("width") ),
-                    Std.parseFloat( xml.get("height") ),
-                    Std.parseFloat( xml.get("rx") )*2,
-                    Std.parseFloat( xml.get("ry") )*2
-                );
-                shape.s.buttonMode = true;
-                shape.s.addEventListener( MouseEvent.CLICK, onClick );
+                var rx:Float = ( xml.get("rx")!=null ? Std.parseFloat( xml.get("rx") )*2 : 0 );
+                var ry:Float = ( xml.get("ry")!=null ? Std.parseFloat( xml.get("ry") )*2 : 0 );
+                if ( rx != 0 || ry != 0  ) {
+                    shape.graphics.drawRoundRect( 0, 0,
+                        Std.parseFloat( xml.get("width") ), Std.parseFloat( xml.get("height") ), 
+                        rx, ry );
+                } else {
+                    shape.graphics.drawRect( 0, 0,
+                        Std.parseFloat( xml.get("width") ), Std.parseFloat( xml.get("height") ) 
+                    );
+                }
                 element = shape;
-            case "svg:text", "text":
+            case "svg:text", "text", "svg:flowRoot", "flowRoot":
                 element = parseTextNode( xml );                
             default:
                 Debug.log("unimplemented "+xml.nodeName);
@@ -240,8 +257,8 @@ class ParserSVG implements IParser
                 if ( e.nodeType != Xml.Element )
                     continue;
                 switch ( e.nodeName ) {
-                    case "svg:g", "svg:image", "svg:rect", "svg:text", 
-                         "g", "image", "rect", "text":
+                    case "svg:g", "svg:image", "svg:rect", "svg:text", "svg:flowRoot",
+                         "g", "image", "rect", "text", "flowRoot":
                         element.addChild( parseElement( e ) );
                     default:
                         //Debug.log("unimplemented child node "+e.nodeName);
