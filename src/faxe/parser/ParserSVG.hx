@@ -50,7 +50,7 @@ class ParserSVG implements IParser
 
         var t:String = xml.get("transform");
         if ( t != null ) {
-            var r:EReg = ~/(matrix|translate)\(([-0-9.,]*)\)/;
+            var r:EReg = ~/(matrix|translate|scale)\(([-0-9.,]*)\)/;
             if ( r.match( t ) ) {
                 var values:Array<String> = r.matched(2).split(",");
                 switch ( r.matched(1) ) {
@@ -68,9 +68,12 @@ class ParserSVG implements IParser
                     case "translate":
                         m.tx = Std.parseFloat( values[ 0 ] ) + m.tx;
                         m.ty = Std.parseFloat( values[ 1 ] ) + m.ty;
+                    case "scale":
+                        m.a *= Std.parseFloat( values[ 0 ] );
+                        m.d *= Std.parseFloat( values[ 1 ] );
                 }
             } else {
-                Debug.log("transform type not matched!");
+                Debug.log("transform type not matched! "+t);
             }
         }
     }

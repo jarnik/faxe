@@ -29,7 +29,7 @@ class Layout
         root = p.parse( Assets.getBytes( path ) );
 	}
 
-    public function render(path:String = null):DisplayObjectContainer {
+    public function render(path:String = null):ElementSprite {
         var d:ElementSprite = root.render( true );
 
         /*

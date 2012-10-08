@@ -69,7 +69,7 @@ class ElementSprite extends Sprite
     public function align( r:Rectangle = null ):Void {
         // TODO when parent is transformed, alignment goes wild
 
-        //Debug.log(name+" align CFG "+alignment);
+        //Debug.log(name+" align CFG "+alignment+" margins "+marginLeft+" "+marginRight+" "+marginTop+" "+marginBottom);
         var w:Float = ( wrapperWidth > 0 ? wrapperWidth : 0 );
         var h:Float = ( wrapperHeight > 0 ? wrapperHeight : 0 );
 
@@ -92,7 +92,7 @@ class ElementSprite extends Sprite
                 y = r.y + (r.height - h) / 2;
             default:                    
         }
-        //Debug.log(name+" aligning myself to "+x+" within "+r);
+        //Debug.log(name+" aligning myself to "+x+" "+y+" within "+r);
 
         r.x = 0; r.y = 0;
         r.width = wrapperWidth < 0 ? r.width : wrapperWidth;
@@ -120,26 +120,28 @@ class ElementSprite extends Sprite
         }
 
         if ( fixedSize == null ) {
+            //Debug.log(name +" pos "+x+" content "+content.x+" gonna measure bounds");
             var r:Rectangle = content.getBounds( this );
-            x = r.x;
-            y = r.y;
+            x += r.x;
+            y += r.y;
             content.x -= r.x;
             content.y -= r.y;
             wrapperWidth = r.width;
             wrapperHeight = r.height;
+            //Debug.log(name +" my content is bounds "+r);
         } else {
             // negative size means inherit from parent
             wrapperWidth = -fixedSize.width;
             wrapperHeight = -fixedSize.height;
         }
-        //Debug.log(name +" wrapper size "+wrapperWidth +" "+wrapperHeight);
+        //Debug.log(name +" wrapper size "+wrapperWidth +" "+wrapperHeight+" pos "+x);
 
         // for all kids, set their respective border towards me
         for ( c in kids ) {
-            c.marginLeft = c.x;
-            c.marginTop = c.y;
-            c.marginRight = Math.abs( wrapperWidth ) - (c.x + Math.abs(c.wrapperWidth));
-            c.marginBottom = Math.abs( wrapperHeight ) - (c.y + Math.abs(c.wrapperHeight));
+            c.marginLeft = c.x + content.x;
+            c.marginTop = c.y + content.y;
+            c.marginRight = Math.abs( wrapperWidth ) - (c.x + content.x + Math.abs(c.wrapperWidth));
+            c.marginBottom = Math.abs( wrapperHeight ) - (c.y + content.y + Math.abs(c.wrapperHeight));
             //Debug.log(" > kid "+c.name+" margins "+c.marginLeft+" "+c.marginRight);
         }
     }
@@ -174,9 +176,8 @@ class ElementSprite extends Sprite
     }
 
     private function onResize( e:Event = null ):Void {
-        //Debug.log("Resizing "+name);
+        //Debug.log("Resizing "+name+" stage.stageWidth "+stage.stageWidth);
         align( new Rectangle( 0, 0, stage.stageWidth, stage.stageHeight ) );
     }
-
 
 }
