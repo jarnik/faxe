@@ -89,14 +89,12 @@ class ParserSVG implements IParser
         return hash;
     }
 
-    private function parseShapeStyle( shape:Shape, style:String ):Void {
-        var g:Graphics = shape.graphics;
-        var s:Sprite = shape.s;
+    private function parseShapeStyle( e:Element, style:String ):Void {
+        if ( style == null )
+            return;
 
         var vals:Hash<String> = parseStyle( style );
-
         var opacity:Float = 1;
-
         var setFill:Bool = false;
         var fill:Int = 0x000000;
         var fill_opacity:Float = 1;
@@ -119,17 +117,22 @@ class ParserSVG implements IParser
             }
         }
 
-        s.alpha = opacity;
+        e.opacity = opacity;
 
-        if ( setFill )
-            g.beginFill( fill, opacity );
-        else
-            g.beginFill( 0x000000, 0 );
-
-        if ( setStroke )
-            g.lineStyle( stroke_width, stroke, stroke_opacity );
-        else
-            g.lineStyle( Math.NaN, 0 );
+        if ( Std.is( e, Shape ) ) {
+            var shape:Shape;
+            shape = cast( e, Shape );
+            var g:Graphics = shape.graphics;
+            if ( setFill )
+                g.beginFill( fill, opacity );
+            else
+                g.beginFill( 0x000000, 0 );
+    
+            if ( setStroke )
+                g.lineStyle( stroke_width, stroke, stroke_opacity );
+            else
+                g.lineStyle( Math.NaN, 0 );
+        }
     }
 
     private function parseTextNode( xml:Xml ):Element {
@@ -204,14 +207,14 @@ class ParserSVG implements IParser
                 align.h = ALIGN_H_RIGHT;
             if ( cfg.indexOf("L") != -1 )
                 align.h = ALIGN_H_LEFT;
-            if ( cfg.indexOf("HC") != -1 )
+            if ( cfg.indexOf("C") != -1 )
                 align.h = ALIGN_H_CENTER;
             if ( cfg.indexOf("T") != -1 )
                 align.v = ALIGN_V_TOP;
             if ( cfg.indexOf("B") != -1 )
                 align.v = ALIGN_V_BOTTOM;
-            if ( cfg.indexOf("VC") != -1 )
-                align.v = ALIGN_V_CENTER;
+            if ( cfg.indexOf("M") != -1 )
+                align.v = ALIGN_V_MIDDLE;
         }
 
         return align;
@@ -228,6 +231,49 @@ class ParserSVG implements IParser
             );
         }
     }
+    
+    private function parsePath( xml:Xml ):Element {        
+        var s:Shape = new Shape();
+        parseShapeStyle( s, xml.get("style") );
+        
+        var data:Array<String> = xml.get("d").split(" ");
+        var d:String = data.shift(); // m
+
+        var rx:Float = Math.NaN;
+        var ry:Float = Math.NaN;
+
+        if ( d == "m" ) {
+            d = data.shift();
+            while ( data.length > 0 ) {
+                switch ( d ) {
+                    case "a":
+                        d = data.shift();
+                        var rrx:Float = Std.parseFloat( d.split(",")[0] )*2;
+                        var rry:Float = Std.parseFloat( d.split(",")[1] )*2;
+                        s.graphics.drawEllipse(
+                            rx - rrx, ry - rry/2,
+                            rrx,
+                            rry
+                        );
+                        data = [];
+                    case "z":
+                        d = data.shift();
+                    default:
+                        if ( Math.isNaN( rx ) && Math.isNaN( ry ) ) {
+                            rx = Std.parseFloat( d.split(",")[0] );
+                            ry = Std.parseFloat( d.split(",")[1] );
+                            s.graphics.moveTo( rx, ry );
+                        } else {
+                            rx += Std.parseFloat( d.split(",")[0] );
+                            ry += Std.parseFloat( d.split(",")[1] );
+                            s.graphics.lineTo( rx, ry );
+                        }
+                        d = data.shift();
+                }  
+            }
+        }
+        return s;
+    }
 
     private function parseElement( xml:Xml ):Element {        
         var element:Element = null;
@@ -238,6 +284,7 @@ class ParserSVG implements IParser
             case "svg:g", "g":
                 element = new Element(); 
                 parseSize( element, xml );
+                parseShapeStyle( element, xml.get("style") );
             case "svg:image", "image":
                 image = new Image( Assets.getBitmapData( "assets/"+xml.get("xlink:href") ) ); 
                 element = image;
@@ -262,6 +309,8 @@ class ParserSVG implements IParser
             case "svg:svg", "svg":
                 element = new Element();
                 parseSize( element, xml );
+            case "svg:path", "path":
+                element = parsePath( xml );
             default:
                 Debug.log("unimplemented "+xml.nodeName);
                 element = new Element(); 
@@ -276,8 +325,8 @@ class ParserSVG implements IParser
                 if ( e.nodeType != Xml.Element )
                     continue;
                 switch ( e.nodeName ) {
-                    case "svg:g", "svg:image", "svg:rect", "svg:text", "svg:flowRoot",
-                         "g", "image", "rect", "text", "flowRoot":
+                    case "svg:g", "svg:image", "svg:rect", "svg:text", "svg:path", "svg:flowRoot",
+                         "g", "image", "rect", "text", "path", "flowRoot":
                         element.addChild( parseElement( e ) );
                     default:
                         //Debug.log("unimplemented child node "+e.nodeName);

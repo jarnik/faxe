@@ -18,9 +18,9 @@ class Element
     public var color:ColorTransform;
     public var children:Array<Element>;
     public var name:String;
-    public var s:Sprite;
     public var alignment:AlignConfig;
     public var fixedSize:Rectangle;
+    public var opacity:Float;
 
 	public function new () 
 	{
@@ -30,12 +30,14 @@ class Element
         transform.identity();
         color = new ColorTransform();
         alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
+        opacity = 1;
 	}
 
     public function renderContent():Sprite {
         var s:Sprite = new Sprite();
         s.transform.matrix = transform;
         s.transform.colorTransform = color;
+        s.alpha = opacity;
         return s;
     }
 

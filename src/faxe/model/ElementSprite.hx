@@ -25,7 +25,7 @@ enum ALIGN_V {
     ALIGN_V_NONE;
     ALIGN_V_TOP;
     ALIGN_V_BOTTOM;
-    ALIGN_V_CENTER;
+    ALIGN_V_MIDDLE;
     ALIGN_V_STRETCH;
 }
 
@@ -88,7 +88,7 @@ class ElementSprite extends Sprite
                 y = r.y + marginTop;
             case ALIGN_V_BOTTOM:
                 y = r.y + r.height - h - marginBottom;
-            case ALIGN_V_CENTER:
+            case ALIGN_V_MIDDLE:
                 y = r.y + (r.height - h) / 2;
             default:                    
         }

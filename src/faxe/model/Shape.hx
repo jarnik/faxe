@@ -11,6 +11,7 @@ import jarnik.gaxe.Debug;
 class Shape extends Element 
 {
     public var graphics:Graphics;
+    public var s:Sprite;
 
 	public function new () 
 	{
