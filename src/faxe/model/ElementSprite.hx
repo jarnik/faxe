@@ -74,7 +74,7 @@ class ElementSprite extends Sprite
     public function align( r:Rectangle = null ):Void {
         // TODO when parent is transformed, alignment goes wild
 
-        Debug.log(name+" align CFG "+alignment+" margins "+marginLeft+" "+marginRight+" "+marginTop+" "+marginBottom);
+        //Debug.log(name+" align CFG "+alignment+" margins "+marginLeft+" "+marginRight+" "+marginTop+" "+marginBottom);
         var w:Float = ( wrapperWidth > 0 ? wrapperWidth : 0 );
         var h:Float = ( wrapperHeight > 0 ? wrapperHeight : 0 );
 
@@ -97,7 +97,7 @@ class ElementSprite extends Sprite
                 y = r.y + (r.height - h) / 2;
             default:                    
         }
-        Debug.log(name+" aligning myself to "+x+" "+y+" within "+r);
+        //Debug.log(name+" aligning myself to "+x+" "+y+" within "+r);
 
         r.x = 0; r.y = 0;
         r.width = wrapperWidth < 0 ? r.width : wrapperWidth;
@@ -188,6 +188,8 @@ class ElementSprite extends Sprite
     }
 
     private function onResize( e:Event = null ):Void {
+        if ( stage == null )
+            return;
         //Debug.log("Resizing "+name+" stage.stageWidth "+stage.stageWidth);
         align( new Rectangle( 0, 0, stage.stageWidth, stage.stageHeight ) );
     }

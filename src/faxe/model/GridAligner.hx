@@ -16,30 +16,57 @@ import jarnik.gaxe.Debug;
 class GridAligner extends ElementSprite
 {
 
-	public function new ( w:Float, h:Float ) 
+    private var cols:Int;
+    private var stride:Float; // px center distances
+    private var items:Array<ElementSprite>;
+    private var fullWidth:Float;
+    private var fullHeight:Float;
+
+	public function new () 
 	{
         super( false );
-        wrapperWidth = w;
-        wrapperHeight = h;
-        alignment.h = ALIGN_H_RIGHT;
-        alignment.v = ALIGN_V_TOP;
-        name = "grdimaster";
+        name = "grid"+Math.round( Math.random()*1000 );
 	}
     
     public function initGrid( 
-        items:Array<ElementSprite>
-        
+        w:Float,
+        h:Float,
+        items:Array<ElementSprite>,
+        cols:Int,
+        stride:Float        
     ):Void {
-        var i:Int = 0;
-        for ( e in items ) {
+        wrapperWidth = fullWidth = w;
+        wrapperHeight = fullHeight = h;
+        this.items = items;
+        this.cols = cols;
+        this.stride = stride;
+
+        var e:ElementSprite;
+        for ( i in 0...items.length ) {
+            e = items[ i ];
             addChild( e );
-            e.x = i * 60;
-            e.y = 0; 
-            i++;
+            e.x = (i % cols)*stride - e.wrapperWidth / 2 + (w - (cols-1)*stride)/2;
+            e.y = Math.floor(i / cols)*stride - e.wrapperHeight / 2 + (h - Math.floor(items.length / cols)*stride)/2;
         }
     }
 
     override public function align( r:Rectangle = null ):Void {
+
+        var scale:Float = 1;
+        if ( r.width < fullWidth || r.height < fullHeight ) {
+            if ( fullWidth/fullHeight > r.width/r.height )
+                scale = r.width / fullWidth;
+            else
+                scale = r.height / fullHeight;
+        }
+
+        if ( scaleX != scale ) {
+            scaleX = scale;
+            scaleY = scale;
+            wrapperWidth = fullWidth*scale;
+            wrapperHeight = fullHeight*scale;
+        }
+
         super.align( r );
     }
 

@@ -109,7 +109,7 @@ class ParserSVG implements IParser
             v = vals.get( k );
             switch ( k ) {
                 case "opacity": opacity = Std.parseFloat( v );
-                case "fill": setFill = true; fill = Std.parseInt( "0x"+v.substr(1) );
+                case "fill": setFill = ( v != "none" ); fill = Std.parseInt( "0x"+v.substr(1) );
                 case "fill-opacity": fill_opacity = Std.parseFloat( v );
                 case "stroke": setStroke = ( v != "none" ); stroke = Std.parseInt( "0x"+v.substr(1) );
                 case "stroke-width": stroke_width = Std.parseFloat( v );
