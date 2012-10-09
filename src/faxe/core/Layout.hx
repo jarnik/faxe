@@ -29,8 +29,17 @@ class Layout
         root = p.parse( Assets.getBytes( path ) );
 	}
 
-    public function render(path:String = null):ElementSprite {
-        var d:ElementSprite = root.render( true );
+    public function render( isRoot:Bool = true, path:String = null):ElementSprite {
+        var e:Element = root;
+        if ( path != null )  
+            e = root.fetch( path );
+
+        if ( e == null ) {
+            Debug.log("path "+path+" not found!");
+            return null;
+        }
+
+        var d:ElementSprite = e.render( isRoot );
 
         /*
         var e:ElementSprite = d.fetch("layer3.rect.rect3000");

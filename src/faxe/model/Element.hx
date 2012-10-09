@@ -65,6 +65,23 @@ class Element
         children.insert( index, e );
     }
 
+    public function fetch( path:String ):Element {
+        var pathElements:Array<String> = path.split("."); 
+        //Debug.log("fetching kid "+pathElements[0]+"  ");
+
+        for ( kid in children ) {
+            //Debug.log("matching kid "+kid.name);
+            if ( kid.name == pathElements[0] ) {
+                if ( pathElements.length == 1 )
+                    return kid;
+                else
+                    return kid.fetch( path.substr( path.indexOf(".")+1 ) );
+            }
+        }
+
+        return null;
+    }
+
     public function render( isRoot:Bool = false, _parentSize:Rectangle = null ):ElementSprite {
 
         if ( fixedSize != null && _parentSize != null )
