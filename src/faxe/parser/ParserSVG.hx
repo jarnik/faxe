@@ -236,42 +236,49 @@ class ParserSVG implements IParser
         var s:Shape = new Shape();
         parseShapeStyle( s, xml.get("style") );
         
-        var data:Array<String> = xml.get("d").split(" ");
+        var data:Array<String> = xml.get("d").toLowerCase().split(" ");
         var d:String = data.shift(); // m
 
         var rx:Float = Math.NaN;
         var ry:Float = Math.NaN;
 
-        if ( d == "m" ) {
-            d = data.shift();
-            while ( data.length > 0 ) {
-                switch ( d ) {
-                    case "a":
-                        d = data.shift();
-                        var rrx:Float = Std.parseFloat( d.split(",")[0] )*2;
-                        var rry:Float = Std.parseFloat( d.split(",")[1] )*2;
-                        s.graphics.drawEllipse(
-                            rx - rrx, ry - rry/2,
-                            rrx,
-                            rry
-                        );
-                        data = [];
-                    case "z":
-                        d = data.shift();
-                    default:
-                        if ( Math.isNaN( rx ) && Math.isNaN( ry ) ) {
-                            rx = Std.parseFloat( d.split(",")[0] );
-                            ry = Std.parseFloat( d.split(",")[1] );
-                            s.graphics.moveTo( rx, ry );
-                        } else {
-                            rx += Std.parseFloat( d.split(",")[0] );
-                            ry += Std.parseFloat( d.split(",")[1] );
-                            s.graphics.lineTo( rx, ry );
-                        }
-                        d = data.shift();
-                }  
-            }
+        if ( d != "m" )
+            return s;
+
+        d = data.shift();                
+        rx = Std.parseFloat( d.split(",")[0] );
+        ry = Std.parseFloat( d.split(",")[1] );
+
+        switch ( data[0] ) {
+            case "a":
+                d = data.shift(); // a
+                d = data.shift();
+                var rrx:Float = Std.parseFloat( d.split(",")[0] )*2;
+                var rry:Float = Std.parseFloat( d.split(",")[1] )*2;
+                s.graphics.drawEllipse(
+                    rx - rrx, ry - rry/2,
+                    rrx,
+                    rry
+                );
+            case "c":
+                var rrx:Float = Std.parseFloat( xml.get("sodipodi:rx") );
+                var rry:Float = Std.parseFloat( xml.get("sodipodi:ry") );
+                s.graphics.drawEllipse(
+                    Std.parseFloat( xml.get("sodipodi:cx") ) - rrx,
+                    Std.parseFloat( xml.get("sodipodi:cy") ) - rry,
+                    rrx*2, rry*2
+                );
+            default:
+                // path
+                s.graphics.moveTo( rx,ry );
+                while ( data.length > 1 ) {
+                    d = data.shift();                
+                    rx += Std.parseFloat( d.split(",")[0] );
+                    ry += Std.parseFloat( d.split(",")[1] );
+                    s.graphics.lineTo( rx, ry );
+                }
         }
+
         return s;
     }
 

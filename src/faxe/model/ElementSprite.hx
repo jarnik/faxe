@@ -120,7 +120,7 @@ class ElementSprite extends Sprite
         }
 
         if ( fixedSize == null ) {
-            //Debug.log(name +" pos "+x+" content "+content.x+" gonna measure bounds");
+            //Debug.log(name +" pos "+x+" "+y+" content "+content.x+" "+content.y+" gonna measure bounds");
             var r:Rectangle = content.getBounds( this );
             x += r.x;
             y += r.y;
@@ -142,7 +142,7 @@ class ElementSprite extends Sprite
             c.marginTop = c.y + content.y;
             c.marginRight = Math.abs( wrapperWidth ) - (c.x + content.x + Math.abs(c.wrapperWidth));
             c.marginBottom = Math.abs( wrapperHeight ) - (c.y + content.y + Math.abs(c.wrapperHeight));
-            //Debug.log(" > kid "+c.name+" margins "+c.marginLeft+" "+c.marginRight);
+            //Debug.log(" > kid "+c.name+" margins "+c.marginLeft+" "+c.marginRight+" "+c.marginTop+" "+c.marginBottom);
         }
     }
 
