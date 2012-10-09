@@ -89,7 +89,7 @@ class Element
 
         var e:ElementSprite = new ElementSprite( isRoot );
         e.name = name;
-        e.alignment = alignment;
+        e.alignment = { h:alignment.h, v:alignment.v };
 
         var c:Sprite = renderContent();
 

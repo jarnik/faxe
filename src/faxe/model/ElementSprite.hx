@@ -66,10 +66,15 @@ class ElementSprite extends Sprite
             addEventListener( Event.ADDED_TO_STAGE, onAddedToStage );
 	}
 
+    public function resetAlignment():Void {
+        alignment.h = ALIGN_H_NONE;
+        alignment.v = ALIGN_V_NONE;
+    }
+
     public function align( r:Rectangle = null ):Void {
         // TODO when parent is transformed, alignment goes wild
 
-        //Debug.log(name+" align CFG "+alignment+" margins "+marginLeft+" "+marginRight+" "+marginTop+" "+marginBottom);
+        Debug.log(name+" align CFG "+alignment+" margins "+marginLeft+" "+marginRight+" "+marginTop+" "+marginBottom);
         var w:Float = ( wrapperWidth > 0 ? wrapperWidth : 0 );
         var h:Float = ( wrapperHeight > 0 ? wrapperHeight : 0 );
 
@@ -92,21 +97,28 @@ class ElementSprite extends Sprite
                 y = r.y + (r.height - h) / 2;
             default:                    
         }
-        //Debug.log(name+" aligning myself to "+x+" "+y+" within "+r);
+        Debug.log(name+" aligning myself to "+x+" "+y+" within "+r);
 
         r.x = 0; r.y = 0;
         r.width = wrapperWidth < 0 ? r.width : wrapperWidth;
         r.height = wrapperHeight < 0 ? r.height : wrapperHeight;
 
-        r.x -= content.x;
-        r.y -= content.y;
-        //Debug.log(name+" aligning kids to "+r);
-        for ( i in 0...content.numChildren ) {
-            if ( Std.is( content.getChildAt( i ), ElementSprite ) )
-                cast( content.getChildAt( i ), ElementSprite ).align( r.clone() );
+        if ( content != null ) {
+            r.x -= content.x;
+            r.y -= content.y;
+            //Debug.log(name+" aligning kids to "+r);
+            for ( i in 0...content.numChildren ) {
+                if ( Std.is( content.getChildAt( i ), ElementSprite ) )
+                    cast( content.getChildAt( i ), ElementSprite ).align( r.clone() );
+            }
         }
     }
     
+    public function addSubElement( e:ElementSprite ):Void {
+        content.addChild( e );
+        kids.set( e.name, e );
+    }
+
     public function addContent( _content:Sprite, fixedSize:Rectangle = null ):Void {
         content = _content;
         addChild( content );
