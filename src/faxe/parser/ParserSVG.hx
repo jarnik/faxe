@@ -15,6 +15,7 @@ import nme.events.MouseEvent;
 
 import format.svg.PathSegment;
 import format.gfx.GfxGraphics;
+import format.svg.Path;
 import format.svg.PathParser;
 import format.svg.RenderContext;
 
@@ -127,16 +128,21 @@ class ParserSVG implements IParser
         if ( Std.is( e, Shape ) ) {
             var shape:Shape;
             shape = cast( e, Shape );
-            var g:Graphics = shape.graphics;
-            if ( setFill )
-                g.beginFill( fill, opacity );
-            else
-                g.beginFill( 0x000000, 0 );
+            var p:Path = shape.path;
+            if ( setFill ) {
+                p.fill = FillSolid( fill );
+                p.fill_alpha = opacity;
+            } else
+                p.fill = FillNone;
     
-            if ( setStroke )
-                g.lineStyle( stroke_width, stroke, stroke_opacity );
-            else
-                g.lineStyle( Math.NaN, 0 );
+            if ( setStroke ) {
+                //g.lineStyle( stroke_width, stroke, stroke_opacity );
+                p.stroke_width = stroke_width;
+                p.stroke_colour = stroke;
+                p.stroke_alpha = stroke_opacity;
+            } else {
+                //g.lineStyle( Math.NaN, 0 );
+            }
         }
     }
 
@@ -245,14 +251,9 @@ class ParserSVG implements IParser
         var pathData:String = xml.get("d");
 
         var pathParser:PathParser = new PathParser();
-        var segments:Array<PathSegment> = pathParser.parse( pathData, true );
-
-        var gfx:GfxGraphics = new GfxGraphics( s.graphics );
-        var rc:RenderContext = new RenderContext( s.transform );
-
-        for ( seg in segments ) {
-            seg.toGfx( gfx, rc );
-        }
+        //var segments:Array<PathSegment> = pathParser.parse( pathData, true );
+        s.path.segments = pathParser.parse( pathData, true );
+        s.updateExtent();
         
         return s;
     }
@@ -327,6 +328,8 @@ class ParserSVG implements IParser
                 parseShapeStyle( shape, xml.get("style") );
                 var rx:Float = ( xml.get("rx")!=null ? Std.parseFloat( xml.get("rx") )*2 : 0 );
                 var ry:Float = ( xml.get("ry")!=null ? Std.parseFloat( xml.get("ry") )*2 : 0 );
+                // TODO draw rec using paths?
+                /*
                 if ( rx != 0 || ry != 0  ) {
                     shape.graphics.drawRoundRect( 0, 0,
                         Std.parseFloat( xml.get("width") ), Std.parseFloat( xml.get("height") ), 
@@ -335,7 +338,7 @@ class ParserSVG implements IParser
                     shape.graphics.drawRect( 0, 0,
                         Std.parseFloat( xml.get("width") ), Std.parseFloat( xml.get("height") ) 
                     );
-                }
+                }*/
                 element = shape;
             case "svg:text", "text", "svg:flowRoot", "flowRoot":
                 element = parseTextNode( xml );                
@@ -367,8 +370,8 @@ class ParserSVG implements IParser
             }
 
         if ( Std.is( element, Shape ) ) { 
-            var w:Float = cast( element, Shape ).s.width;
-            var h:Float = cast( element, Shape ).s.height;
+            var w:Float = cast( element, Shape ).extent.width;
+            var h:Float = cast( element, Shape ).extent.height;
             //Debug.log( "shape "+w+"x"+h );
             var ww:Float = Math.abs(element.transform.a*w) + Math.abs(element.transform.c*h);
             var hh:Float = Math.abs(element.transform.b*w) + Math.abs(element.transform.d*h);
