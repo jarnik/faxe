@@ -13,6 +13,11 @@ import nme.text.TextFormat;
 import nme.utils.ByteArray;
 import nme.events.MouseEvent;
 
+import format.svg.PathSegment;
+import format.gfx.GfxGraphics;
+import format.svg.PathParser;
+import format.svg.RenderContext;
+
 import jarnik.gaxe.Debug;
 
 import faxe.model.Element;
@@ -236,6 +241,27 @@ class ParserSVG implements IParser
         var s:Shape = new Shape();
         parseShapeStyle( s, xml.get("style") );
         
+        //var data:Array<String> = xml.get("d").toLowerCase().split(" ");
+        var pathData:String = xml.get("d");
+
+        var pathParser:PathParser = new PathParser();
+        var segments:Array<PathSegment> = pathParser.parse( pathData, true );
+
+        var gfx:GfxGraphics = new GfxGraphics( s.graphics );
+        var rc:RenderContext = new RenderContext( s.transform );
+
+        for ( seg in segments ) {
+            seg.toGfx( gfx, rc );
+        }
+        
+        return s;
+    }
+
+    /*
+    private function parsePath( xml:Xml ):Element {        
+        var s:Shape = new Shape();
+        parseShapeStyle( s, xml.get("style") );
+        
         var data:Array<String> = xml.get("d").toLowerCase().split(" ");
         var d:String = data.shift(); // m
 
@@ -280,7 +306,7 @@ class ParserSVG implements IParser
         }
 
         return s;
-    }
+    }*/
 
     private function parseElement( xml:Xml ):Element {        
         var element:Element = null;
