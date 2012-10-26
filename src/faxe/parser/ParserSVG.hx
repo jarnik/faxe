@@ -243,6 +243,54 @@ class ParserSVG implements IParser
         }
     }
     
+    private function parseRect( xml:Xml ):Element {
+        var s:Shape = new Shape();
+        parseShapeStyle( s, xml.get("style") );
+
+        var inPath:Xml = xml;
+        var path:Path = s.path;
+
+        var x = 0;//inPath.exists ("x") ? Std.parseFloat (inPath.get ("x")) : 0;
+        var y = 0;//inPath.exists ("y") ? Std.parseFloat (inPath.get ("y")) : 0;
+        var w = Std.parseFloat (inPath.get ("width"));
+        var h = Std.parseFloat (inPath.get ("height"));
+        var rx = inPath.exists ("rx") ? Std.parseFloat (inPath.get ("rx")) : 0.0;
+        var ry = inPath.exists ("ry") ? Std.parseFloat (inPath.get ("ry")) : 0.0;
+
+        if (rx == 0 || ry == 0) {
+            path.segments.push (new MoveSegment (x , y));
+            path.segments.push (new DrawSegment (x + w, y));
+            path.segments.push (new DrawSegment (x + w, y + h));
+            path.segments.push (new DrawSegment (x, y + h));
+            path.segments.push (new DrawSegment (x, y));
+
+        } else {
+
+            path.segments.push (new MoveSegment (x, y + ry));
+
+            // top-left
+            path.segments.push (new QuadraticSegment (x, y, x + rx, y));
+            path.segments.push (new DrawSegment (x + w - rx, y));
+
+            // top-right
+            path.segments.push (new QuadraticSegment (x + w, y, x + w, y + rx));
+            path.segments.push (new DrawSegment (x + w, y + h - ry));
+
+            // bottom-right
+            path.segments.push (new QuadraticSegment (x + w, y + h, x + w - rx, y + h));
+            path.segments.push (new DrawSegment (x + rx, y + h));
+
+            // bottom-left
+            path.segments.push (new QuadraticSegment (x, y + h, x, y + h - ry));
+            path.segments.push (new DrawSegment (x, y + ry));
+
+        }
+        s.updateExtent();
+
+        return s;
+
+    }
+
     private function parsePath( xml:Xml ):Element {        
         var s:Shape = new Shape();
         parseShapeStyle( s, xml.get("style") );
@@ -258,57 +306,6 @@ class ParserSVG implements IParser
         return s;
     }
 
-    /*
-    private function parsePath( xml:Xml ):Element {        
-        var s:Shape = new Shape();
-        parseShapeStyle( s, xml.get("style") );
-        
-        var data:Array<String> = xml.get("d").toLowerCase().split(" ");
-        var d:String = data.shift(); // m
-
-        var rx:Float = Math.NaN;
-        var ry:Float = Math.NaN;
-
-        if ( d != "m" )
-            return s;
-
-        d = data.shift();                
-        rx = Std.parseFloat( d.split(",")[0] );
-        ry = Std.parseFloat( d.split(",")[1] );
-
-        switch ( data[0] ) {
-            case "a":
-                d = data.shift(); // a
-                d = data.shift();
-                var rrx:Float = Std.parseFloat( d.split(",")[0] )*2;
-                var rry:Float = Std.parseFloat( d.split(",")[1] )*2;
-                s.graphics.drawEllipse(
-                    rx - rrx, ry - rry/2,
-                    rrx,
-                    rry
-                );
-            case "c":
-                var rrx:Float = Std.parseFloat( xml.get("sodipodi:rx") );
-                var rry:Float = Std.parseFloat( xml.get("sodipodi:ry") );
-                s.graphics.drawEllipse(
-                    Std.parseFloat( xml.get("sodipodi:cx") ) - rrx,
-                    Std.parseFloat( xml.get("sodipodi:cy") ) - rry,
-                    rrx*2, rry*2
-                );
-            default:
-                // path
-                s.graphics.moveTo( rx,ry );
-                while ( data.length > 1 ) {
-                    d = data.shift();                
-                    rx += Std.parseFloat( d.split(",")[0] );
-                    ry += Std.parseFloat( d.split(",")[1] );
-                    s.graphics.lineTo( rx, ry );
-                }
-        }
-
-        return s;
-    }*/
-
     private function parseElement( xml:Xml ):Element {        
         var element:Element = null;
 
@@ -323,23 +320,7 @@ class ParserSVG implements IParser
                 image = new Image( Assets.getBitmapData( "assets/"+xml.get("xlink:href") ) ); 
                 element = image;
             case "svg:rect", "rect":
-                //Debug.log("rect");
-                shape = new Shape(); 
-                parseShapeStyle( shape, xml.get("style") );
-                var rx:Float = ( xml.get("rx")!=null ? Std.parseFloat( xml.get("rx") )*2 : 0 );
-                var ry:Float = ( xml.get("ry")!=null ? Std.parseFloat( xml.get("ry") )*2 : 0 );
-                // TODO draw rec using paths?
-                /*
-                if ( rx != 0 || ry != 0  ) {
-                    shape.graphics.drawRoundRect( 0, 0,
-                        Std.parseFloat( xml.get("width") ), Std.parseFloat( xml.get("height") ), 
-                        rx, ry );
-                } else {
-                    shape.graphics.drawRect( 0, 0,
-                        Std.parseFloat( xml.get("width") ), Std.parseFloat( xml.get("height") ) 
-                    );
-                }*/
-                element = shape;
+                element = parseRect( xml );
             case "svg:text", "text", "svg:flowRoot", "flowRoot":
                 element = parseTextNode( xml );                
             case "svg:svg", "svg":

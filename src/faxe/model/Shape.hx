@@ -26,6 +26,7 @@ class Shape extends Element
 	{
         super();
         path = new Path();
+        path.segments = [];
 	}
 
     public function updateExtent():Void {
