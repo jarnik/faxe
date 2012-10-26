@@ -39,19 +39,8 @@ class Layout
             return null;
         }
 
-        var d:ElementSprite = e.render( isRoot );
-
-        /*
-        var e:ElementSprite = d.fetch("layer3.rect.rect3000");
-        //e.alignment.h = ALIGN_H_LEFT;
-        e.onClick( clickTest );
-        Debug.log("fetched "+e);*/
+        var d:ElementSprite = e.render( isRoot, root.fixedSize );
 
         return d;
     }
-
-    public function clickTest( e:MouseEvent = null ):Void {
-        Debug.log("CLICKED!");
-    }
-
 }

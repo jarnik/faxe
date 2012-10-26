@@ -145,6 +145,7 @@ class ElementSprite extends Sprite
             // negative size means inherit from parent
             wrapperWidth = -fixedSize.width;
             wrapperHeight = -fixedSize.height;
+            //Debug.log(name + " wrapper shrinked to "+wrapperWidth+" "+wrapperHeight+" fixed "+fixedSize);
         }
         //Debug.log(name +" wrapper size "+wrapperWidth +" "+wrapperHeight+" pos "+x);
 
@@ -155,6 +156,7 @@ class ElementSprite extends Sprite
             c.marginRight = Math.abs( wrapperWidth ) - (c.x + content.x + Math.abs(c.wrapperWidth));
             c.marginBottom = Math.abs( wrapperHeight ) - (c.y + content.y + Math.abs(c.wrapperHeight));
             //Debug.log(" > kid "+c.name+" margins "+c.marginLeft+" "+c.marginRight+" "+c.marginTop+" "+c.marginBottom);
+            //Debug.log("wrapper "+wrapperWidth+" "+wrapperHeight+" c "+c.x+" "+c.y+" content "+content.x+" "+content.y+" c.wrapper "+c.wrapperWidth+" "+c.wrapperHeight);
         }
     }
 

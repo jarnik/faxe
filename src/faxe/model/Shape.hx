@@ -27,10 +27,10 @@ class Shape extends Element
         super();
         path = new Path();
         path.segments = [];
+        path.fill = FillNone;
 	}
 
     public function updateExtent():Void {
-        // TODO
         var gfx:GfxExtent = new GfxExtent();
         var m:Matrix = transform.clone();
         var context:RenderContext = new RenderContext( m );
@@ -40,15 +40,10 @@ class Shape extends Element
     }
 
     override public function renderContent():Sprite {        
-        /*
-        var s:ElementSprite = super.renderSelf();
-        s.graphics.copyFrom( graphics );
-        return s;*/
-        
         var s:Sprite = super.renderContent();
         var inPath:Path = path;
 
-        if (inPath.segments.length==0 )
+        if ( inPath.segments.length==0 )
            return s;
 
         var m:Matrix = s.transform.matrix.clone();
@@ -92,11 +87,7 @@ class Shape extends Element
         gfx.endFill();
         gfx.endLineStyle();
 
-        //s.graphics.copyFrom( graphics );
-
         return s;
-
     }
-
 
 }
