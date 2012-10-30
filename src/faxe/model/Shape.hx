@@ -73,7 +73,7 @@ class Shape extends Element
            var style = new format.gfx.LineStyle();
            var scale = Math.sqrt(m.a*m.a + m.c*m.c);
            style.thickness = inPath.stroke_width*scale;
-           style.alpha = inPath.stroke_alpha*inPath.fill_alpha;
+           style.alpha = inPath.stroke_alpha;//*inPath.fill_alpha;
            style.color = inPath.stroke_colour;
            style.capsStyle = inPath.stroke_caps;
            style.jointStyle = inPath.joint_style;

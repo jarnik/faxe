@@ -46,7 +46,7 @@ class GridAligner extends ElementSprite
             e = items[ i ];
             addChild( e );
             e.x = (i % cols)*stride - e.wrapperWidth / 2 + (w - (cols-1)*stride)/2;
-            e.y = Math.floor(i / cols)*stride - e.wrapperHeight / 2 + (h - Math.floor(items.length / cols)*stride)/2;
+            e.y = Math.floor(i / cols)*stride - e.wrapperHeight / 2 + (h - Math.floor((items.length-1) / cols)*stride)/2;
         }
     }
 

@@ -131,7 +131,7 @@ class ParserSVG implements IParser
             var p:Path = shape.path;
             if ( setFill ) {
                 p.fill = FillSolid( fill );
-                p.fill_alpha = opacity;
+                p.fill_alpha = fill_opacity;
             } else
                 p.fill = FillNone;
     
