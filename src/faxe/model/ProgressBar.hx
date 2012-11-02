@@ -31,6 +31,7 @@ import faxe.model.GridAligner;
 class ProgressBar extends ElementSprite 
 {   
     private var ITEM_COUNT:Int;
+    private static inline var ITEM_MAX_COUNT:Int = 9;
 
     private var gFull:GridAligner;
     private var gEmpty:GridAligner;
@@ -38,17 +39,31 @@ class ProgressBar extends ElementSprite
     private var creditsFull:Array<ElementSprite>;
     private var creditsEmpty:Array<ElementSprite>;
 
-	public function new ( isRootNode:Bool = false, full:Element, empty:Element, w:Float, count:Int ) 
+    private var w:Float;
+    private var stride:Float;
+
+	public function new ( isRootNode:Bool = false, full:Element, empty:Element, w:Float, count:Int, ?stride:Float ) 
 	{
 		super( isRootNode );
 
-        ITEM_COUNT = count;
-
         creditsFull = [];
         creditsEmpty = [];
-            
+         
+        this.w = w;
+        this.stride = stride;
+
+        gFull = new GridAligner();
+        gFull.alignment.h = ALIGN_H_CENTER;
+        gFull.name = "gridFull";
+        gEmpty = new GridAligner();
+        gEmpty.alignment.h = ALIGN_H_CENTER;
+        gEmpty.name = "gridEmpty";
+          
+        addChild( gEmpty );
+        addChild( gFull );
+
         var e:ElementSprite = null;
-        for ( i in 0...ITEM_COUNT ) {
+        for ( i in 0...ITEM_MAX_COUNT ) {
             e = empty.render( false, empty.fixedSize );
             creditsEmpty.push( e );
 
@@ -59,26 +74,40 @@ class ProgressBar extends ElementSprite
         wrapperWidth = w;
         wrapperHeight = e.wrapperHeight;
 
-        gFull = new GridAligner();
-        gFull.name = "gridFull";
-        gFull.initGrid( wrapperWidth, wrapperHeight, creditsFull, count, w / count );
+        rebuild( count );
 
-        gEmpty = new GridAligner();
-        gEmpty.name = "gridEmpty";
-        gEmpty.initGrid( wrapperWidth, wrapperHeight, creditsEmpty, count, w / count );
+        wrapperWidth = w;
+        wrapperHeight = e.wrapperHeight;
 
-        var content:Sprite = new Sprite();
-        content.addChild( gEmpty );
-        content.addChild( gFull );
+        setValue( 0 );
+    }
 
-        addContent( content );
+    public function rebuild( count:Int ):Void {
+        ITEM_COUNT = count;
+
+        var s:Float = (Math.isNaN( stride ) ? w / count : stride );
+        gFull.initGrid( w, wrapperHeight, creditsFull.slice( 0, count ), count, s );
+        gEmpty.initGrid( w, wrapperHeight, creditsEmpty.slice( 0, count ), count, s );
     }
 
     public function setValue( credits:Int ):Void {
-        for ( i in 0...ITEM_COUNT ) {
-            creditsFull[ i ].visible = ( i < credits );
-            creditsEmpty[ i ].visible = ( i >= credits );
+        //Debug.log("set value "+credits+" of "+ITEM_COUNT+" < "+ITEM_MAX_COUNT);
+        for ( i in 0...ITEM_MAX_COUNT ) {
+            creditsFull[ i ].visible = ( i < credits ) && ( i < ITEM_COUNT );
+            creditsEmpty[ i ].visible = ( i >= credits ) && ( i < ITEM_COUNT );
         }
+    }
+
+    override public function align( r:Rectangle = null ):Void {
+        super.align( r.clone() );
+
+        r.x = ( r.width > wrapperWidth ? 0 : (wrapperWidth - r.width)/2 ); 
+        r.y = 0;
+        r.width = Math.min( r.width, wrapperWidth );
+        r.height = Math.min( r.height, wrapperHeight );
+
+        gFull.align( r.clone() );
+        gEmpty.align( r.clone() );
     }
 
 }

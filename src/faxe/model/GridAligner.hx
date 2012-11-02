@@ -41,16 +41,21 @@ class GridAligner extends ElementSprite
         this.cols = cols;
         this.stride = stride;
 
+        while ( numChildren > 0 )
+            removeChildAt( 0 );
+
         var e:ElementSprite;
         for ( i in 0...items.length ) {
             e = items[ i ];
             addChild( e );
             e.x = (i % cols)*stride - e.wrapperWidth / 2 + (w - (cols-1)*stride)/2;
+            //e.x = - e.wrapperWidth / 2 + (w - (cols-1)*stride)/2;
             e.y = Math.floor(i / cols)*stride - e.wrapperHeight / 2 + (h - Math.floor((items.length-1) / cols)*stride)/2;
         }
     }
 
     override public function align( r:Rectangle = null ):Void {
+        //Debug.log("r "+r+" "+fullWidth+" "+fullHeight+" "+name);
 
         var scale:Float = 1;
         if ( r.width < fullWidth || r.height < fullHeight ) {

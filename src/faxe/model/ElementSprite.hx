@@ -4,6 +4,7 @@ import nme.Assets;
 import nme.display.Sprite;
 import nme.display.DisplayObject;
 import nme.display.DisplayObjectContainer;
+import nme.text.TextField;
 import nme.geom.Matrix;
 import nme.geom.Rectangle;
 import nme.geom.ColorTransform;
@@ -114,9 +115,21 @@ class ElementSprite extends Sprite
         }
     }
     
-    public function addSubElement( e:ElementSprite ):Void {
+    public function addSubElement( e:ElementSprite, ?x:Float, ?y:Float ):Void {
+        if ( e.parent != null && e.parent.parent != null && Std.is( e.parent.parent, ElementSprite ) )
+            cast(e.parent.parent,ElementSprite).removeSubElement( e );
+
         content.addChild( e );
         kids.set( e.name, e );
+        if ( !Math.isNaN( x ) )
+            e.x = x - content.x;
+        if ( !Math.isNaN( y ) )
+            e.y = y - content.y;
+    }
+
+    public function removeSubElement( e:ElementSprite ):Void {
+        content.removeChild( e );
+        kids.remove( e.name );
     }
 
     public function addContent( _content:Sprite, fixedSize:Rectangle = null ):Void {
@@ -179,10 +192,25 @@ class ElementSprite extends Sprite
     }
 
     public function onClick( _callback:Dynamic = null ):Void {
-        content.buttonMode = true;
-        content.addEventListener( MouseEvent.CLICK, _callback );
+        buttonMode = true;
+        mouseChildren = false;
+        addEventListener( MouseEvent.CLICK, _callback );
     }
-  
+
+    public function onEvents( events:Array<String>, _callback:Dynamic = null ):Void {
+        buttonMode = true;
+        mouseChildren = false;
+        for ( e in events )
+            addEventListener( e, _callback );
+    }
+
+    public function setText( text:String ):Void {
+        if ( content != null && content.numChildren > 0 && 
+            Std.is( content.getChildAt( 0 ), TextField )
+        )
+            cast( content.getChildAt( 0 ), TextField ).text = text;
+    }
+ 
     public function copyPosition( e:ElementSprite ):Void {
         x = e.x;
         y = e.y;
