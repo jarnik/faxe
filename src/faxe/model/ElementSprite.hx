@@ -183,6 +183,11 @@ class ElementSprite extends Sprite
         content.addEventListener( MouseEvent.CLICK, _callback );
     }
   
+    public function copyPosition( e:ElementSprite ):Void {
+        x = e.x;
+        y = e.y;
+    }
+
     private function onAddedToStage( e:Event ):Void {        
         //Debug.log("added to stage "+name);
         stage.addEventListener( Event.RESIZE, onResize );
