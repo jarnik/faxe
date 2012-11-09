@@ -226,6 +226,10 @@ class ParserSVG implements IParser
                 align.v = ALIGN_V_BOTTOM;
             if ( cfg.indexOf("M") != -1 )
                 align.v = ALIGN_V_MIDDLE;
+            if ( cfg.indexOf("S") != -1 ) {
+                align.v = ALIGN_V_STRETCH;
+                align.h = ALIGN_H_STRETCH;
+            }
         }
 
         return align;

@@ -86,6 +86,9 @@ class ElementSprite extends Sprite
                 x = r.x + r.width - w - marginRight;
             case ALIGN_H_CENTER:
                 x = r.x + (r.width - w) / 2;
+            case ALIGN_H_STRETCH:
+                x = r.x;
+                width = r.width;
             default:
         }
 
@@ -96,9 +99,12 @@ class ElementSprite extends Sprite
                 y = r.y + r.height - h - marginBottom;
             case ALIGN_V_MIDDLE:
                 y = r.y + (r.height - h) / 2;
+            case ALIGN_V_STRETCH:
+                y = r.y;
+                height = r.height;
             default:                    
         }
-        //Debug.log(name+" aligning myself to "+x+" "+y+" within "+r);
+        //Debug.log(name+" aligning myself to "+x+" "+y+" within "+r);        
 
         r.x = 0; r.y = 0;
         r.width = wrapperWidth < 0 ? r.width : wrapperWidth;
