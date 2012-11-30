@@ -23,7 +23,7 @@ import nme.text.TextFormatAlign;
 import nme.events.KeyboardEvent;
 import com.eclecticdesignstudio.motion.Actuate;
 
-import jarnik.gaxe.Debug;
+import gaxe.Debug;
 import faxe.model.ElementSprite;
 import faxe.model.Element;
 import faxe.model.GridAligner;
