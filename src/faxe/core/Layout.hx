@@ -6,8 +6,8 @@ import nme.events.MouseEvent;
 import nme.geom.Rectangle;
 import nme.display.DisplayObjectContainer;
 
-import jarnik.gaxe.Gaxe;
-import jarnik.gaxe.Debug;
+import gaxe.Gaxe;
+import gaxe.Debug;
 
 import faxe.Main;
 import faxe.model.Element;

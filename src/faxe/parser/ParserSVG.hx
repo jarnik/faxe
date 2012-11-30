@@ -19,7 +19,7 @@ import format.svg.Path;
 import format.svg.PathParser;
 import format.svg.RenderContext;
 
-import jarnik.gaxe.Debug;
+import gaxe.Debug;
 
 import faxe.model.Element;
 import faxe.model.ElementSprite;

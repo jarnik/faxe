@@ -11,7 +11,7 @@ import nme.events.Event;
 import nme.events.MouseEvent;
 
 import faxe.Main;
-import jarnik.gaxe.Debug;
+import gaxe.Debug;
 
 class GridAligner extends ElementSprite
 {

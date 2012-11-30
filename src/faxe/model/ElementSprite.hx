@@ -12,7 +12,7 @@ import nme.events.Event;
 import nme.events.MouseEvent;
 
 import faxe.Main;
-import jarnik.gaxe.Debug;
+import gaxe.Debug;
 
 enum ALIGN_H {
     ALIGN_H_NONE;
@@ -47,6 +47,7 @@ class ElementSprite extends Sprite
     public var wrapperHeight:Float;
 
     public var content:Sprite;
+    public var element:Element;
 
     public var kids:Hash<ElementSprite>;
 

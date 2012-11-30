@@ -10,7 +10,7 @@ import nme.geom.ColorTransform;
 
 import faxe.Main;
 import faxe.model.ElementSprite;
-import jarnik.gaxe.Debug;
+import gaxe.Debug;
 
 class Element
 {
@@ -89,6 +89,7 @@ class Element
 
         var e:ElementSprite = new ElementSprite( isRoot );
         e.name = name;
+        e.element = this;
         e.alignment = { h:alignment.h, v:alignment.v };
 
         var c:Sprite = renderContent();
