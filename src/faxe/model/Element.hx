@@ -10,7 +10,7 @@ import nme.geom.ColorTransform;
 
 import faxe.Main;
 import faxe.model.ElementSprite;
-import gaxe.Debug;
+//import gaxe.Debug;
 
 class Element
 {

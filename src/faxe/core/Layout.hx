@@ -6,15 +6,13 @@ import nme.events.MouseEvent;
 import nme.geom.Rectangle;
 import nme.display.DisplayObjectContainer;
 
-import gaxe.Gaxe;
-import gaxe.Debug;
-
 import faxe.Main;
 import faxe.model.Element;
 import faxe.model.ElementSprite;
 import faxe.model.Image;
 import faxe.parser.IParser;
 import faxe.parser.ParserSVG;
+import faxe.parser.ParserSVG2;
 //import faxe.parser.ParserXCF;
 
 class Layout 
@@ -24,7 +22,7 @@ class Layout
 
 	public function new (path:String) 
 	{
-        var p:IParser = new ParserSVG();
+        var p:IParser = new ParserSVG2();
         //var p:IParser = new ParserXCF();
         root = p.parse( Assets.getBytes( path ) );
 	}
@@ -35,7 +33,8 @@ class Layout
             e = root.fetch( path );
 
         if ( e == null ) {
-            Debug.log("path "+path+" not found!");
+            //Debug.log("path "+path+" not found!");
+            trace("path "+path+" not found!");
             return null;
         }
 

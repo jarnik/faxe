@@ -17,6 +17,7 @@
 	<set name="BUILD_DIR" value="Export" />
 	<classpath name="../src" />
 	<haxelib name="nme" />
+	<haxelib name="svg" />
     <haxelib name="hxJson2" />
 	
 <!--	<assets path="../../lib" rename="assets" include="*" exclude="nme.svg" /> -->

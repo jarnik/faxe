@@ -27,21 +27,31 @@ import faxe.model.Image;
 import faxe.model.Shape;
 import faxe.model.Text;
 
-class ParserSVG implements IParser
+import format.svg.SVGData;
+
+class ParserSVG2 implements IParser
 {
 	public function new () {
     }
 
     public function parse( file:ByteArray ):Element {
+        /*
         var xml:Xml = Xml.parse( file.toString() );
         var root:Xml = null;
         for ( ee in xml ) {
             if ( ee.nodeType == Xml.Element )
                 root = ee;
-        }
+        }*/
 
-        return parseElement( root );
+        var data:SVGData;
+        data = new SVGData (Xml.parse ( file.toString() ));
+
+        var root:Element = new Element();
+
+        return root;
     }
+
+    /*
 
     private function parseTransform( e:Element, xml:Xml ):Void {
         var m:Matrix = e.transform;
@@ -79,8 +89,7 @@ class ParserSVG implements IParser
                         m.d *= Std.parseFloat( values[ 1 ] );
                 }
             } else {
-                //Debug.log("transform type not matched! "+t);
-                trace("transform type not matched! "+t);
+                Debug.log("transform type not matched! "+t);
             }
         }
     }
@@ -334,7 +343,7 @@ class ParserSVG implements IParser
             case "svg:path", "path":
                 element = parsePath( xml );
             default:
-                //Debug.log("unimplemented "+xml.nodeName);
+                Debug.log("unimplemented "+xml.nodeName);
                 element = new Element(); 
         }
         element.alignment = parseAlign( xml.get("id") );
@@ -368,7 +377,8 @@ class ParserSVG implements IParser
     }
 
     private function onClick(e:MouseEvent):Void {
-        //Debug.log("click "+e.target);
+        Debug.log("click "+e.target);
     }
+    */
 
 }

@@ -15,7 +15,7 @@ import format.svg.Path;
 import format.svg.RenderContext;
 
 import faxe.Main;
-import gaxe.Debug;
+//import gaxe.Debug;
 
 class Shape extends Element 
 {

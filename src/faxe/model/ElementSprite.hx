@@ -12,7 +12,7 @@ import nme.events.Event;
 import nme.events.MouseEvent;
 
 import faxe.Main;
-import gaxe.Debug;
+//import gaxe.Debug;
 
 enum ALIGN_H {
     ALIGN_H_NONE;
