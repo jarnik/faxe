@@ -16,6 +16,7 @@ import nme.events.MouseEvent;
 import format.svg.PathSegment;
 import format.gfx.GfxGraphics;
 import format.svg.Path;
+import format.svg.Group;
 import format.svg.PathParser;
 import format.svg.RenderContext;
 
@@ -46,9 +47,38 @@ class ParserSVG2 implements IParser
         var data:SVGData;
         data = new SVGData (Xml.parse ( file.toString() ));
 
-        var root:Element = new Element();
+        /*
+        trace(data.width+" x "+data.height+" "+data.children.length);
+        for ( kid in data.children ) {
+            switch ( kid ) {
+                case DisplayGroup( g ): trace( g.name );
+                default:
+                    trace( kid );
+                //DisplayPath( p:Path ): trace( p );
+                //DisplayText( t:Text ): trace( t );
+            }
+        }*/
 
+        var root:Element = parseDisplayElement( DisplayGroup( data ) );
         return root;
+    }
+
+    private function parseDisplayElement( de:DisplayElement ):Element {
+        var e:Element = null;
+        switch ( de ) {
+            case DisplayGroup( g ):
+                trace("group "+g.name);
+                e = new Element();
+                for ( kid in g.children )
+                    e.addChild( parseDisplayElement( kid ) );
+            case DisplayPath( p ): 
+                trace( "path "+p );
+                e = new Shape( p );
+            case DisplayText( t ): 
+                trace( "text not implemented yet, sorry :) " );
+            default:
+        }
+        return e;
     }
 
     /*

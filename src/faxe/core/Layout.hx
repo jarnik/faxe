@@ -11,7 +11,7 @@ import faxe.model.Element;
 import faxe.model.ElementSprite;
 import faxe.model.Image;
 import faxe.parser.IParser;
-import faxe.parser.ParserSVG;
+//import faxe.parser.ParserSVG;
 import faxe.parser.ParserSVG2;
 //import faxe.parser.ParserXCF;
 

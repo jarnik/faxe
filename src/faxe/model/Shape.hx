@@ -22,12 +22,10 @@ class Shape extends Element
     public var path:Path;
     public var extent:Rectangle;
 
-	public function new () 
+	public function new ( p:Path ) 
 	{
         super();
-        path = new Path();
-        path.segments = [];
-        path.fill = FillNone;
+        path = p;
 	}
 
     public function updateExtent():Void {
