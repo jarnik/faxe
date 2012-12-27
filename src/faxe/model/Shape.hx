@@ -28,7 +28,7 @@ class Shape extends Element
         path = p;
 	}
 
-    override public function updateExtent():Void {
+    override public function updateExtent( forcedSize:Rectangle = null ):Void {
         trace("extent shape "+path);
                
         var gfx:GfxExtent = new GfxExtent();

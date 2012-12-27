@@ -32,6 +32,8 @@ import format.svg.SVGData;
 
 class ParserSVG2 implements IParser
 {
+    private var data:SVGData;
+
 	public function new () {
     }
 
@@ -44,7 +46,6 @@ class ParserSVG2 implements IParser
                 root = ee;
         }*/
 
-        var data:SVGData;
         data = new SVGData (Xml.parse ( file.toString() ));
 
         /*
@@ -59,19 +60,23 @@ class ParserSVG2 implements IParser
             }
         }*/
 
-        var root:Element = parseDisplayElement( DisplayGroup( data ) );
+        var root:Element = parseDisplayElement( DisplayGroup( data ), 2 );
         return root;
     }
 
-    private function parseDisplayElement( de:DisplayElement ):Element {
+    private function parseDisplayElement( de:DisplayElement, forcedSizeLevel:Int = 0 ):Element {
         var e:Element = null;
+        var forcedSize:Rectangle = null;
         switch ( de ) {
             case DisplayGroup( g ):
                 trace("group "+g.name);
                 e = new Element();
                 e.name = g.name;
                 for ( kid in g.children )
-                    e.addChild( parseDisplayElement( kid ) );
+                    e.addChild( parseDisplayElement( kid, forcedSizeLevel - 1 ) );
+                if ( forcedSizeLevel > 0 ) {
+                    forcedSize = new Rectangle( 0, 0, data.width, data.height );
+                }
             case DisplayPath( p ): 
                 trace( "path "+p );
                 e = new Shape( p );
@@ -79,7 +84,7 @@ class ParserSVG2 implements IParser
                 trace( "text not implemented yet, sorry :) " );
             default:
         }
-        e.updateExtent();
+        e.updateExtent( forcedSize );
         return e;
     }
 

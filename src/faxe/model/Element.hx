@@ -41,21 +41,25 @@ class Element
         children.insert( index, e );
     }
 
-    public function updateExtent():Void {
-        fixedSize = new Rectangle( Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY, 0, 0 );
+    public function updateExtent( forcedSize:Rectangle = null ):Void {
+        if ( forcedSize != null ) {
+            fixedSize = forcedSize.clone();
+        } else {
+            fixedSize = new Rectangle( Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY, 0, 0 );
 
-        trace( "gonna update extent for kids of "+name );
-        for ( kid in children ) {
-            fixedSize.x = Math.min( fixedSize.x, kid.fixedSize.x );
-            fixedSize.y = Math.min( fixedSize.y, kid.fixedSize.y );
-            fixedSize.width = Math.max( fixedSize.width, kid.fixedSize.x + kid.fixedSize.width );
-            fixedSize.height = Math.max( fixedSize.height, kid.fixedSize.y + kid.fixedSize.height );
+            trace( "gonna compute extent for kids of "+name );
+            for ( kid in children ) {
+                fixedSize.x = Math.min( fixedSize.x, kid.fixedSize.x );
+                fixedSize.y = Math.min( fixedSize.y, kid.fixedSize.y );
+                fixedSize.width = Math.max( fixedSize.width, kid.fixedSize.x + kid.fixedSize.width );
+                fixedSize.height = Math.max( fixedSize.height, kid.fixedSize.y + kid.fixedSize.height );
+            }
+            for ( kid in children ) {
+                kid.moveOrigin( fixedSize.x, fixedSize.y );
+            }
+            fixedSize.width -= fixedSize.x;
+            fixedSize.height -= fixedSize.y;
         }
-        for ( kid in children ) {
-            kid.moveOrigin( fixedSize.x, fixedSize.y );
-        }
-        fixedSize.width -= fixedSize.x;
-        fixedSize.height -= fixedSize.y;
         trace("group "+name+" extents "+fixedSize);
     }
 
