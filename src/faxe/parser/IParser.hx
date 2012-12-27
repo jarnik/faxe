@@ -7,11 +7,11 @@ import nme.display.BitmapData;
 import nme.display.DisplayObjectContainer;
 import nme.utils.ByteArray;
 
-import faxe.model.Element;
+import faxe.model.IElement;
 
 interface IParser
 {
 
-    function parse( file:ByteArray ):Element;
+    function parse( file:ByteArray ):IElement;
 
 }

@@ -2,24 +2,30 @@ package faxe.model;
 
 import nme.Assets;
 import nme.display.Sprite;
+import nme.geom.Rectangle;
 import nme.display.DisplayObjectContainer;
 import nme.display.Graphics;
 import nme.text.TextField;
 import nme.text.TextFormat;
 
 import faxe.Main;
+import faxe.model.IElement;
 
-class Text extends Element 
+class Text implements IElement 
 {
-    public var tf:TextField;
-    public var format:TextFormat;
+    private var tf:TextField;
+    private var format:TextFormat;
+    public var fixedSize:Rectangle;
 
 	public function new () 
 	{
-        super();
         tf = new TextField();
         format = new TextFormat();
 	}
+
+    public function render( isRoot:Bool = false ):DisplayNode {
+        return null;
+    }
 
     /*
     override public function renderContent():Sprite {        

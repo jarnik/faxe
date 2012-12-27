@@ -15,14 +15,14 @@ import nme.events.MouseEvent;
 
 import format.svg.PathSegment;
 import format.gfx.GfxGraphics;
-import format.svg.Path;
+//import format.svg.Path;
 import format.svg.Group;
 import format.svg.PathParser;
 import format.svg.RenderContext;
 
 //import gaxe.Debug;
 
-import faxe.model.Element;
+import faxe.model.IElement;
 import faxe.model.ElementSprite;
 import faxe.model.Image;
 import faxe.model.Shape;
@@ -37,15 +37,7 @@ class ParserSVG2 implements IParser
 	public function new () {
     }
 
-    public function parse( file:ByteArray ):Element {
-        /*
-        var xml:Xml = Xml.parse( file.toString() );
-        var root:Xml = null;
-        for ( ee in xml ) {
-            if ( ee.nodeType == Xml.Element )
-                root = ee;
-        }*/
-
+    public function parse( file:ByteArray ):IElement {
         data = new SVGData (Xml.parse ( file.toString() ));
 
         /*
@@ -60,23 +52,23 @@ class ParserSVG2 implements IParser
             }
         }*/
 
-        var root:Element = parseDisplayElement( DisplayGroup( data ), 2 );
+        var root:IElement = parseElement( DisplayGroup( data ), 2 );
         return root;
     }
 
-    private function parseDisplayElement( de:DisplayElement, forcedSizeLevel:Int = 0 ):Element {
-        var e:Element = null;
+    private function parseElement( de:DisplayElement, forcedSizeLevel:Int = 0 ):IElement {
+        var e:IElement = null;
         var forcedSize:Rectangle = null;
         switch ( de ) {
-            case DisplayGroup( g ):
-                trace("group "+g.name);
-                e = new Element();
-                e.name = g.name;
-                for ( kid in g.children )
-                    e.addChild( parseDisplayElement( kid, forcedSizeLevel - 1 ) );
+            case DisplayGroup( group ):
+                trace("group "+group.name);
+                var g:faxe.model.Group = new faxe.model.Group( group.name );
+                for ( kid in group.children )
+                    g.addChild( parseElement( kid, forcedSizeLevel - 1 ) );
                 if ( forcedSizeLevel > 0 ) {
                     forcedSize = new Rectangle( 0, 0, data.width, data.height );
                 }
+                g.updateExtent( forcedSize );
             case DisplayPath( p ): 
                 trace( "path "+p );
                 e = new Shape( p );
@@ -84,7 +76,6 @@ class ParserSVG2 implements IParser
                 trace( "text not implemented yet, sorry :) " );
             default:
         }
-        e.updateExtent( forcedSize );
         return e;
     }
 

@@ -2,27 +2,27 @@ package faxe.model;
 
 import nme.Assets;
 import nme.display.Sprite;
+import nme.geom.Rectangle;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.DisplayObjectContainer;
 
 import faxe.Main;
+import faxe.model.IElement;
 
-class Image extends Element
+class Image implements IElement
 {
     public var bitmapData:BitmapData;
+    public var fixedSize:Rectangle;
 
 	public function new ( bmd:BitmapData ) 
 	{
-        super();
         bitmapData = bmd;
+        fixedSize = new Rectangle( 0, 0, bitmapData.width, bitmapData.height );
 	}
 
-    /*
-    override public function renderContent():Sprite {
-        var s:Sprite = super.renderContent();
-        s.addChild( new Bitmap( bitmapData ) );
-        return s;
-    }*/
+    public function render( isRoot:Bool = false ):DisplayNode {
+        return NodeBitmap( new Bitmap( bitmapData ) );
+    }
 
 }

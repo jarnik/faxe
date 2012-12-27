@@ -32,8 +32,9 @@
     <assets path="Assets/json" rename="assets/json" include="*" />
     -->
     <assets path="Assets" rename="assets" include="*.png" type="image" />
-    <assets path="Assets/fonts" rename="assets/fonts" type="font" include="*" />
-    <assets path="Assets/layouts" rename="assets/layouts" include="*" type="binary" />
+    <assets path="Assets/layouts" rename="assets/layouts" include="*.svg" type="binary" />
+    <!--
+    -->
 	
     <!--
     <assets path="Assets" rename="assets" include="*" exclude="nme.svg" />

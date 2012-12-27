@@ -12,6 +12,7 @@ import nme.events.Event;
 import nme.events.MouseEvent;
 
 import faxe.Main;
+import faxe.model.IElement;
 //import gaxe.Debug;
 
 enum ALIGN_H {
@@ -38,16 +39,17 @@ typedef AlignConfig = {
 class ElementSprite extends Sprite
 {
 
+    /*
     public var marginLeft:Float;
     public var marginRight:Float;
     public var marginTop:Float;
     public var marginBottom:Float;
     public var alignment:AlignConfig;
     public var wrapperWidth:Float;
-    public var wrapperHeight:Float;
+    public var wrapperHeight:Float;*/
 
-    public var content:Sprite;
-    public var element:Element;
+    //public var content:Sprite;
+    public var element:IElement;
 
     public var kids:Hash<ElementSprite>;
 
@@ -55,28 +57,30 @@ class ElementSprite extends Sprite
 	{
         super();
         
+        /*
         marginLeft = 0;
         marginRight = 0;
         marginTop = 0;
-        marginBottom = 0;
+        marginBottom = 0;*/
 
         kids = new Hash<ElementSprite>();
 
-        alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
+        //alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 
         if ( isRootNode )
             addEventListener( Event.ADDED_TO_STAGE, onAddedToStage );
 	}
 
     public function resetAlignment():Void {
-        alignment.h = ALIGN_H_NONE;
-        alignment.v = ALIGN_V_NONE;
+        //alignment.h = ALIGN_H_NONE;
+        //alignment.v = ALIGN_V_NONE;
     }
 
     public function align( r:Rectangle = null ):Void {
         // TODO when parent is transformed, alignment goes wild
 
         //Debug.log(name+" align CFG "+alignment+" margins "+marginLeft+" "+marginRight+" "+marginTop+" "+marginBottom);
+        /*
         var w:Float = ( wrapperWidth > 0 ? wrapperWidth : 0 );
         var h:Float = ( wrapperHeight > 0 ? wrapperHeight : 0 );
 
@@ -119,26 +123,44 @@ class ElementSprite extends Sprite
                 if ( Std.is( content.getChildAt( i ), ElementSprite ) )
                     cast( content.getChildAt( i ), ElementSprite ).align( r.clone() );
             }
-        }
+        }*/
     }
     
-    public function addSubElement( e:ElementSprite, ?x:Float, ?y:Float ):Void {
-        if ( e.parent != null && e.parent.parent != null && Std.is( e.parent.parent, ElementSprite ) )
-            cast(e.parent.parent,ElementSprite).removeSubElement( e );
+    public function addSubElement( e:DisplayNode, ?x:Float, ?y:Float ):Void {
+        //if ( e.parent != null && e.parent.parent != null && Std.is( e.parent.parent, ElementSprite ) )
+        //    cast(e.parent.parent,ElementSprite).removeSubElement( e );
 
+        /*
         content.addChild( e );
         kids.set( e.name, e );
         if ( !Math.isNaN( x ) )
             e.x = x - content.x;
         if ( !Math.isNaN( y ) )
             e.y = y - content.y;
+            */
+        var d:DisplayObject = null;
+        switch ( e ) {
+            case NodeElement( e ):
+                kids.set( e.name, e );
+                d = e;
+            case NodeBitmap( b ):
+                d = b;
+            case NodeShape( s ):
+                d = s;
+            case NodeText( t ):
+                d = t;
+        }
+        addChild( d );
     }
 
     public function removeSubElement( e:ElementSprite ):Void {
+        /*
         content.removeChild( e );
         kids.remove( e.name );
+        */
     }
 
+    /*
     public function addContent( _content:Sprite, fixedSize:Rectangle = null ):Void {
         content = _content;
         addChild( content );
@@ -178,7 +200,7 @@ class ElementSprite extends Sprite
             //Debug.log(" > kid "+c.name+" margins "+c.marginLeft+" "+c.marginRight+" "+c.marginTop+" "+c.marginBottom);
             //Debug.log("wrapper "+wrapperWidth+" "+wrapperHeight+" c "+c.x+" "+c.y+" content "+content.x+" "+content.y+" c.wrapper "+c.wrapperWidth+" "+c.wrapperHeight);
         }
-    }
+    }*/
 
     public function fetch( path:String ):ElementSprite {
         var e:ElementSprite = null;
@@ -212,10 +234,12 @@ class ElementSprite extends Sprite
     }
 
     public function setText( text:String ):Void {
+        /*
         if ( content != null && content.numChildren > 0 && 
             Std.is( content.getChildAt( 0 ), TextField )
         )
             cast( content.getChildAt( 0 ), TextField ).text = text;
+            */
     }
  
     public function copyPosition( e:ElementSprite ):Void {
