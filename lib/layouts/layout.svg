@@ -25,10 +25,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="380.05375"
+     inkscape:cx="274.05375"
      inkscape:cy="277.56339"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g2987"
      showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="760"
@@ -53,20 +53,24 @@
      id="layer1"
      transform="translate(0,-572.36218)"
      style="display:inline">
-    <rect
-       style="fill:#0000ff;fill-rule:evenodd;stroke:#000000;stroke-width:0.88731456px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       id="rect3088"
-       width="99.112686"
-       height="199.11269"
-       x="168.88278"
-       y="573.89453" />
-    <rect
-       y="636.89453"
-       x="74.882782"
-       height="199.11269"
-       width="99.112686"
-       id="rect2985"
-       style="fill:#0000ff;fill-rule:evenodd;stroke:#000000;stroke-width:0.88731456px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <g
+       id="g2987">
+      <rect
+         y="-243.18106"
+         x="572.52161"
+         height="199.11269"
+         width="99.112686"
+         id="rect3088"
+         style="fill:#ff0008;fill-rule:evenodd;stroke:#000000;stroke-width:0.88731455999999986px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+         transform="matrix(-0.00261095,0.99999659,-0.99999659,-0.00261095,0,0)" />
+      <rect
+         style="fill:#0000ff;fill-rule:evenodd;stroke:#000000;stroke-width:0.88731456px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="rect2985"
+         width="99.112686"
+         height="199.11269"
+         x="20.443657"
+         y="636.89453" />
+    </g>
   </g>
   <g
      inkscape:groupmode="layer"

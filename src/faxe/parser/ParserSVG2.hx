@@ -69,6 +69,7 @@ class ParserSVG2 implements IParser
             case DisplayGroup( g ):
                 trace("group "+g.name);
                 e = new Element();
+                e.name = g.name;
                 for ( kid in g.children )
                     e.addChild( parseDisplayElement( kid ) );
             case DisplayPath( p ): 
@@ -78,6 +79,7 @@ class ParserSVG2 implements IParser
                 trace( "text not implemented yet, sorry :) " );
             default:
         }
+        e.updateExtent();
         return e;
     }
 

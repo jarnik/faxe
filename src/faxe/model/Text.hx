@@ -21,6 +21,7 @@ class Text extends Element
         format = new TextFormat();
 	}
 
+    /*
     override public function renderContent():Sprite {        
         var _s:Sprite = super.renderContent();
         var _tf:TextField;
@@ -43,6 +44,6 @@ class Text extends Element
         }
 
         return _s;
-    }
+    }*/
 
 }

@@ -20,7 +20,7 @@ import faxe.Main;
 class Shape extends Element 
 {
     public var path:Path;
-    public var extent:Rectangle;
+    //public var extent:Rectangle;
 
 	public function new ( p:Path ) 
 	{
@@ -28,6 +28,39 @@ class Shape extends Element
         path = p;
 	}
 
+    override public function updateExtent():Void {
+        trace("extent shape "+path);
+               
+        var gfx:GfxExtent = new GfxExtent();
+        var context:RenderContext = new RenderContext( path.matrix );
+            //mScaleRect,mScaleW,mScaleH);
+
+        for(segment in path.segments)           
+            segment.toGfx(gfx, context);
+
+        fixedSize = gfx.extent;
+        trace( "first " + gfx.extent );
+        var dx:Float = -gfx.extent.x;
+        var dy:Float = -gfx.extent.y;
+
+        trace("trimming by "+dx+" "+dy);
+
+        path.matrix.translate( dx, dy );
+    
+        /*
+        gfx = new GfxExtent();
+        context = new RenderContext( path.matrix );
+
+        for(segment in path.segments)           
+            segment.toGfx(gfx, context);
+            */
+
+        trace( "trimmed " + gfx.extent );
+        trace( "trimmed fixedSize " + fixedSize );
+
+    }
+
+    /*
     public function updateExtent():Void {
         var gfx:GfxExtent = new GfxExtent();
         var m:Matrix = transform.clone();
@@ -88,4 +121,5 @@ class Shape extends Element
         return s;
     }
 
+    */
 }

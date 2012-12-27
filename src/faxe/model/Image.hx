@@ -18,10 +18,11 @@ class Image extends Element
         bitmapData = bmd;
 	}
 
+    /*
     override public function renderContent():Sprite {
         var s:Sprite = super.renderContent();
         s.addChild( new Bitmap( bitmapData ) );
         return s;
-    }
+    }*/
 
 }
