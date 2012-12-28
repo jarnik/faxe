@@ -33,7 +33,11 @@ enum ALIGN_V {
 
 typedef AlignConfig = {
     h:ALIGN_H,
-    v:ALIGN_V
+    v:ALIGN_V,
+    top:Float,
+    bottom:Float,
+    left:Float,
+    right:Float
 }
 
 class ElementSprite extends Sprite

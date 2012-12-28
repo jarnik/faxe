@@ -39,19 +39,6 @@ class ParserSVG2 implements IParser
 
     public function parse( file:ByteArray ):IElement {
         data = new SVGData (Xml.parse ( file.toString() ));
-
-        /*
-        trace(data.width+" x "+data.height+" "+data.children.length);
-        for ( kid in data.children ) {
-            switch ( kid ) {
-                case DisplayGroup( g ): trace( g.name );
-                default:
-                    trace( kid );
-                //DisplayPath( p:Path ): trace( p );
-                //DisplayText( t:Text ): trace( t );
-            }
-        }*/
-
         var root:IElement = parseElement( DisplayGroup( data ), 2 );
         return root;
     }
@@ -62,13 +49,15 @@ class ParserSVG2 implements IParser
         switch ( de ) {
             case DisplayGroup( group ):
                 //trace("group "+group.name);
-                var g:faxe.model.Group = new faxe.model.Group( group.name );
+                var align:AlignConfig = parseAlign( group.name );
+                var g:faxe.model.Group = new faxe.model.Group( parseName( group.name ) );
                 for ( kid in group.children )
                     g.addChild( parseElement( kid, forcedSizeLevel - 1 ) );
                 if ( forcedSizeLevel > 0 ) {
                     forcedSize = new Rectangle( 0, 0, data.width, data.height );
                 }
                 g.updateExtent( forcedSize );
+                g.alignment = align;
                 e = g;
             case DisplayPath( p ): 
                 //trace( "path "+p+" "+p.matrix );
@@ -80,6 +69,40 @@ class ParserSVG2 implements IParser
         return e;
     }
 
+    private function parseAlign( id:String ):AlignConfig {
+        var align:AlignConfig = { h: ALIGN_H_NONE, v: ALIGN_V_NONE, top: 0, bottom: 0, left: 0, right: 0 };
+
+        var r:EReg = ~/.*\[([A-Za-z]*)\]/;
+        if ( r.match( id ) ) {
+            var cfg:String = r.matched(1).toUpperCase();
+            //Debug.log("align: "+cfg);
+            if ( cfg.indexOf("R") != -1 )
+                align.h = ALIGN_H_RIGHT;
+            if ( cfg.indexOf("L") != -1 )
+                align.h = ALIGN_H_LEFT;
+            if ( cfg.indexOf("C") != -1 )
+                align.h = ALIGN_H_CENTER;
+            if ( cfg.indexOf("T") != -1 )
+                align.v = ALIGN_V_TOP;
+            if ( cfg.indexOf("B") != -1 )
+                align.v = ALIGN_V_BOTTOM;
+            if ( cfg.indexOf("M") != -1 )
+                align.v = ALIGN_V_MIDDLE;
+            if ( cfg.indexOf("S") != -1 ) {
+                align.v = ALIGN_V_STRETCH;
+                align.h = ALIGN_H_STRETCH;
+            }
+        }
+
+        return align;
+    }
+
+    private function parseName( name:String ):String {
+        var r:EReg = ~/([^\[]*)/;
+        if ( !r.match( name ) )
+            return name;
+        return r.matched( 1 );
+    }
     /*
 
     private function parseTransform( e:Element, xml:Xml ):Void {
@@ -246,33 +269,7 @@ class ParserSVG2 implements IParser
         return r.matched( 1 );
     }
 
-    private function parseAlign( id:String ):AlignConfig {
-        var align:AlignConfig = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 
-        var r:EReg = ~/.*\[([A-Za-z]*)\]/;
-        if ( r.match( id ) ) {
-            var cfg:String = r.matched(1).toUpperCase();
-            //Debug.log("align: "+cfg);
-            if ( cfg.indexOf("R") != -1 )
-                align.h = ALIGN_H_RIGHT;
-            if ( cfg.indexOf("L") != -1 )
-                align.h = ALIGN_H_LEFT;
-            if ( cfg.indexOf("C") != -1 )
-                align.h = ALIGN_H_CENTER;
-            if ( cfg.indexOf("T") != -1 )
-                align.v = ALIGN_V_TOP;
-            if ( cfg.indexOf("B") != -1 )
-                align.v = ALIGN_V_BOTTOM;
-            if ( cfg.indexOf("M") != -1 )
-                align.v = ALIGN_V_MIDDLE;
-            if ( cfg.indexOf("S") != -1 ) {
-                align.v = ALIGN_V_STRETCH;
-                align.h = ALIGN_H_STRETCH;
-            }
-        }
-
-        return align;
-    }
 
     private function parseSize( element:Element, xml:Xml ):Void {
         if ( 

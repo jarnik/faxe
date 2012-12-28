@@ -23,7 +23,7 @@ class Group implements IElement
 	{
         children = [];
         this.name = name;
-        alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
+        alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE, top: 0, bottom: 0, left: 0, right: 0 };
 	}
 
     public function addChild( e:IElement ):Void {
