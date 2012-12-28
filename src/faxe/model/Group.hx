@@ -48,15 +48,28 @@ class Group implements IElement
                 fixedSize.width = Math.max( fixedSize.width, kid.fixedSize.x + kid.fixedSize.width );
                 fixedSize.height = Math.max( fixedSize.height, kid.fixedSize.y + kid.fixedSize.height );
             }
+            fixedSize.width -= fixedSize.x;
+            fixedSize.height -= fixedSize.y;
             for ( kid in children ) {
                 //kid.moveOrigin( fixedSize.x, fixedSize.y );
                 kid.fixedSize.x -= fixedSize.x;
                 kid.fixedSize.y -= fixedSize.y;
             }
-            fixedSize.width -= fixedSize.x;
-            fixedSize.height -= fixedSize.y;
-            
         }
+
+        var g:Group;
+        for ( kid in children ) {
+            if ( Std.is( kid, Group )) {
+                g = cast( kid, Group );
+
+                g.alignment.left = g.fixedSize.x;
+                g.alignment.top = g.fixedSize.y;
+                g.alignment.right = fixedSize.width - (g.fixedSize.x + g.fixedSize.width);
+                g.alignment.bottom = fixedSize.height - (g.fixedSize.y + g.fixedSize.height);
+                //trace("kid "+g.fixedSize+" aligns "+g.alignment);                  
+            }
+        }
+
         //trace("group "+name+" extents "+fixedSize);
     }
 
