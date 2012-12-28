@@ -82,9 +82,14 @@ class Main extends Sprite
         //var layout:Layout = FaXe.load("assets/layouts/garage.xcf");
 
 
-        /*
-        var gui:DisplayObjectContainer = layout.render("player");
+        var gui:DisplayObjectContainer = layout.render();
         stateLayer.addChild( gui ); 
+
+        trace("gui "+gui.numChildren+" "+gui.x);
+        trace("gui "+gui.getChildAt(0).name+" "+gui.getChildAt(0).x);
+        trace("gui "+cast( gui.getChildAt(0), DisplayObjectContainer ).getChildAt(0).name+" "+cast( gui.getChildAt(0), DisplayObjectContainer ).getChildAt(0).x);
+
+        /*
         var now2:Float = Lib.getTimer() / 1000;
         Main.log("parse done! "+( now2 - now) );
         */

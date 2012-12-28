@@ -39,7 +39,9 @@ class Group implements IElement
             fixedSize = forcedSize.clone();
         } else {
             fixedSize = new Rectangle( Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY, 0, 0 );
+            fixedSize = new Rectangle( 0, 0, 0, 0 );
 
+            /*
             trace( "gonna compute extent for kids of "+name );
             for ( kid in children ) {
                 fixedSize.x = Math.min( fixedSize.x, kid.fixedSize.x );
@@ -49,13 +51,14 @@ class Group implements IElement
             }
             for ( kid in children ) {
                 //kid.moveOrigin( fixedSize.x, fixedSize.y );
-                kid.fixedSize.x += fixedSize.x;
-                kid.fixedSize.y += fixedSize.y;
+                kid.fixedSize.x -= fixedSize.x;
+                kid.fixedSize.y -= fixedSize.y;
             }
             fixedSize.width -= fixedSize.x;
             fixedSize.height -= fixedSize.y;
+            */
         }
-        trace("group "+name+" extents "+fixedSize);
+        //trace("group "+name+" extents "+fixedSize);
     }
 
     /*
@@ -89,6 +92,8 @@ class Group implements IElement
         var e:ElementSprite = new ElementSprite( isRoot );
         e.name = name;
         e.element = this;
+        e.x = fixedSize.x;
+        e.y = fixedSize.y;
         //e.alignment = { h:alignment.h, v:alignment.v };
 
         for ( c in children ) {

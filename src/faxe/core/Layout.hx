@@ -28,7 +28,7 @@ class Layout
         root = cast( p.parse( Assets.getBytes( path ) ), Group );
 	}
 
-    public function render( isRoot:Bool = true, path:String = null):ElementSprite {
+    public function render( isRoot:Bool = true, path:String = null ):ElementSprite {
         var g:Group = root;
         if ( path != null )  
             g = root.fetch( path );

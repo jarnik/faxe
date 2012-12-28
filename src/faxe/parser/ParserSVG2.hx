@@ -61,7 +61,7 @@ class ParserSVG2 implements IParser
         var forcedSize:Rectangle = null;
         switch ( de ) {
             case DisplayGroup( group ):
-                trace("group "+group.name);
+                //trace("group "+group.name);
                 var g:faxe.model.Group = new faxe.model.Group( group.name );
                 for ( kid in group.children )
                     g.addChild( parseElement( kid, forcedSizeLevel - 1 ) );
@@ -69,8 +69,9 @@ class ParserSVG2 implements IParser
                     forcedSize = new Rectangle( 0, 0, data.width, data.height );
                 }
                 g.updateExtent( forcedSize );
+                e = g;
             case DisplayPath( p ): 
-                trace( "path "+p );
+                //trace( "path "+p+" "+p.matrix );
                 e = new Shape( p );
             case DisplayText( t ): 
                 trace( "text not implemented yet, sorry :) " );
