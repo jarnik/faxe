@@ -86,6 +86,15 @@ class Main extends Sprite
         var gui:DisplayObjectContainer = layout.render();
         stateLayer.addChild( gui ); 
 
+        trace("gui "+gui.numChildren+" "+gui.x);
+        trace("gui "+gui.getChildAt(0));
+        //trace("gui "+gui.getChildAt(1));
+        /*
+        trace("gui "+gui.getChildAt(2));
+        */
+        //trace("gui "+gui.getChildAt(0).name+" "+gui.getChildAt(0).x);
+        //trace("gui "+cast( gui.getChildAt(0), DisplayObjectContainer ).getChildAt(0).name+" "+cast( gui.getChildAt(0), DisplayObjectContainer ).getChildAt(0).x);
+
         /*
         trace("gui "+gui.numChildren+" "+gui.x);
         trace("gui "+gui.getChildAt(0).name+" "+gui.getChildAt(0).x);

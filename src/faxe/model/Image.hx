@@ -26,6 +26,8 @@ class Image implements IElement
     public function render( isRoot:Bool = false ):DisplayNode {
         var b:Bitmap = new Bitmap( bitmapData );
         b.alpha = alpha;
+        b.x = fixedSize.x;
+        b.y = fixedSize.y;
         return NodeBitmap( b );
     }
 

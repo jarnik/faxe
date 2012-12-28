@@ -9,7 +9,9 @@ import nme.display.DisplayObjectContainer;
 import nme.utils.ByteArray;
 import nme.geom.Rectangle;
 
+import faxe.parser.IParser;
 import faxe.model.IElement;
+import faxe.model.ElementSprite;
 import faxe.model.Image;
 import faxe.model.Shape;
 import faxe.model.Group;
@@ -118,6 +120,7 @@ class ParserXCF implements IParser
     }
 
     private function parseLayers():Group {
+        //trace("NEW PARENT LAYER");
         var g:Group = new Group("layers");
         var layerAddresses:Array<Int> = [];
         var address:Int = 0;
@@ -129,10 +132,23 @@ class ParserXCF implements IParser
             address = readUWord();
         };
         
+        var e:IElement;
         for ( lptr in layerAddresses ) {
-            g.addChildAt( parseLayer( lptr, g ), 0 ); 
+            e = parseLayer( lptr, g );
+            //g.addChildAt( e, 0 );
+            //trace(" >>> "+e+" is a kid of "+g.name );
         }
+        recursiveUpdateExtent( g, new Rectangle( 0, 0, head.width, head.height ), 2 );
         return g;
+    }
+
+    private function recursiveUpdateExtent( g:Group, forcedSize:Rectangle = null, forcedSizeLevel:Int = 0 ):Void {
+        for ( kid in g.children ) {
+            if ( !Std.is( kid, Group ) )
+                continue;
+            recursiveUpdateExtent( cast( kid, Group ), forcedSizeLevel > 0 ? forcedSize : null, forcedSizeLevel - 1 );
+        }
+        g.updateExtent( forcedSize );
     }
 
     private function parseLayer( address:Int, root:Group ):IElement {
@@ -141,7 +157,7 @@ class ParserXCF implements IParser
         var h:Int = readUWord();
         var img_type:Int = readUWord();
         var name:String = readString();
-        trace("layer "+w+"x"+h+" type "+img_type+" name "+name);
+        //trace("=== layer "+w+"x"+h+" type "+img_type+" name "+name);
         var prop_type:Int = -1;
         var payload_length:Int = 0;
         var counter:Int = 0;
@@ -149,7 +165,7 @@ class ParserXCF implements IParser
         var dy:Int = 0;
         var opacity:Int = 255;
         var isGroup:Bool = false;
-        var parent:Group = null;
+        var parent:Group = root;//null;
 
         prop_type = readUWord();
         while ( counter < 150 ) {
@@ -166,19 +182,19 @@ class ParserXCF implements IParser
                     //Main.log("is a folder!");
                     readChars( payload_length );
                 case 30: // PROP_ITEM_PATH
-                    //Main.log("is a child "+payload_length);
+                    //trace("is a child "+payload_length);
                     parent = root;
                     var parentIndex:Int; 
                     while ( payload_length > 0 ) {
                         parentIndex = readUWord();
-                        //Main.log("parentindex "+parentIndex);
-                        //Main.log("parent children "+parent.children);
-                        for ( i in (parent.children.length-1)...0 ) {
-                            if ( !Std.is( parent.children[ i ], Image ) )
-                                parentIndex--;
+                        //trace("parentindex "+parentIndex);
+                        //trace("parent "+parent.name+" children "+parent.children.length);
+                        for ( i in 0...parent.children.length ) {
+                            //trace("checking child "+i);
+                            parentIndex--;
                             if ( parentIndex == -1 ) {
-                                parent = cast( parent.children[ i ], Group );
-                                //Main.log("parent "+parent);
+                                parent = cast( parent.children[ parent.children.length-i-1 ], Group );
+                                //trace("lower parent "+parent.name);
                                 break;
                             }
                         }
@@ -204,14 +220,21 @@ class ParserXCF implements IParser
             var mptr:Int = readUWord();
             var bitmapData:BitmapData = parseHierarchy( hptr );
             e = new Image( bitmapData );
-        } else
-            e = new Group( name );
+            //trace("NEW IMAGE layer "+name);
+        } else {
+            var alignment:AlignConfig = Parser.parseAlign( name );
+            e = new Group( Parser.parseName( name ) );
+            cast( e, Group ).alignment = alignment;
+            //trace("NEW GROUP LAYER name "+name+" = "+alignment);
+        }
         e.fixedSize.x += dx;
         e.fixedSize.y += dy;
         e.alpha = opacity / 255;
 
-        if ( parent != null )
+        if ( parent != null ) {
+            //trace(" -> parent is "+parent.name);
             parent.addChildAt( e, 0 );             
+        }
     
         return e;
     }
