@@ -14,7 +14,7 @@ import faxe.model.Group;
 import faxe.parser.IParser;
 //import faxe.parser.ParserSVG;
 import faxe.parser.ParserSVG2;
-//import faxe.parser.ParserXCF;
+import faxe.parser.ParserXCF;
 
 class Layout 
 {
@@ -23,8 +23,16 @@ class Layout
 
 	public function new (path:String) 
 	{
-        var p:IParser = new ParserSVG2();
-        //var p:IParser = new ParserXCF();
+        var extension:String = path.substr( path.lastIndexOf( "." )+1 ).toLowerCase();
+        var p:IParser = null;
+        switch ( extension ) {
+            case "svg":
+                p = new ParserSVG2();
+            case "xcf":
+                p = new ParserXCF();
+            default:
+                trace("format "+extension+" not supported!");
+        }
         root = cast( p.parse( Assets.getBytes( path ) ), Group );
 	}
 
