@@ -23,6 +23,7 @@ enum DisplayNode {
 interface IElement
 {
     var fixedSize:Rectangle;
+    var alpha:Float;
 
     function render( isRoot:Bool = false ):DisplayNode;
 }

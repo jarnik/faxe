@@ -21,12 +21,14 @@ class Shape implements IElement
 {
     private var path:Path;
     public var fixedSize:Rectangle;
+    public var alpha:Float;
 
 	public function new ( p:Path ) 
 	{
         path = p;
         //trace("matrix "+p.matrix);
         updateExtent();
+        alpha = 1;
 	}
 
     private function updateExtent():Void {
@@ -107,7 +109,7 @@ class Shape implements IElement
         mGfx.endFill();
         mGfx.endLineStyle();
 
-        s.alpha = inPath.alpha;
+        s.alpha = alpha;
 
         return NodeShape( s );
     }

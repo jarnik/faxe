@@ -16,11 +16,13 @@ class Text implements IElement
     private var tf:TextField;
     private var format:TextFormat;
     public var fixedSize:Rectangle;
+    public var alpha:Float;
 
 	public function new () 
 	{
         tf = new TextField();
         format = new TextFormat();
+        alpha = 1;
 	}
 
     public function render( isRoot:Bool = false ):DisplayNode {

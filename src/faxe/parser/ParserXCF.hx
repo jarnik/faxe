@@ -9,9 +9,10 @@ import nme.display.DisplayObjectContainer;
 import nme.utils.ByteArray;
 import nme.geom.Rectangle;
 
-import faxe.model.Element;
+import faxe.model.IElement;
 import faxe.model.Image;
 import faxe.model.Shape;
+import faxe.model.Group;
 import faxe.Main;
 
 typedef XCF_HEADER = {
@@ -116,8 +117,8 @@ class ParserXCF implements IParser
         }
     }
 
-    private function parseLayers():Element {
-        var e:Element = new Element();
+    private function parseLayers():Group {
+        var g:Group = new Group("layers");
         var layerAddresses:Array<Int> = [];
         var address:Int = 0;
         address = readUWord();
@@ -129,18 +130,18 @@ class ParserXCF implements IParser
         };
         
         for ( lptr in layerAddresses ) {
-            e.addChildAt( parseLayer( lptr, e ), 0 ); 
+            g.addChildAt( parseLayer( lptr, g ), 0 ); 
         }
-        return e;
+        return g;
     }
 
-    private function parseLayer( address:Int, root:Element ):Element {
+    private function parseLayer( address:Int, root:Group ):IElement {
         data.position = address;
         var w:Int = readUWord();
         var h:Int = readUWord();
         var img_type:Int = readUWord();
         var name:String = readString();
-        Main.log("layer "+w+"x"+h+" type "+img_type+" name "+name);
+        trace("layer "+w+"x"+h+" type "+img_type+" name "+name);
         var prop_type:Int = -1;
         var payload_length:Int = 0;
         var counter:Int = 0;
@@ -148,7 +149,7 @@ class ParserXCF implements IParser
         var dy:Int = 0;
         var opacity:Int = 255;
         var isGroup:Bool = false;
-        var parent:Element = null;
+        var parent:Group = null;
 
         prop_type = readUWord();
         while ( counter < 150 ) {
@@ -176,7 +177,7 @@ class ParserXCF implements IParser
                             if ( !Std.is( parent.children[ i ], Image ) )
                                 parentIndex--;
                             if ( parentIndex == -1 ) {
-                                parent = parent.children[ i ];
+                                parent = cast( parent.children[ i ], Group );
                                 //Main.log("parent "+parent);
                                 break;
                             }
@@ -197,16 +198,17 @@ class ParserXCF implements IParser
             counter++;
         }
 
-        var e:Element;
+        var e:IElement;
         if ( !isGroup ) {
             var hptr:Int = readUWord();
             var mptr:Int = readUWord();
             var bitmapData:BitmapData = parseHierarchy( hptr );
             e = new Image( bitmapData );
         } else
-            e = new Element();
-        e.move( dx, dy );
-        e.setAlpha( opacity / 255 );
+            e = new Group( name );
+        e.fixedSize.x += dx;
+        e.fixedSize.y += dy;
+        e.alpha = opacity / 255;
 
         if ( parent != null )
             parent.addChildAt( e, 0 );             
@@ -317,14 +319,14 @@ class ParserXCF implements IParser
         return bytes;
     }
 
-    public function parse( file:ByteArray ):Element {
+    public function parse( file:ByteArray ):IElement {
         data = file;
         head = parseHeader();
         //Main.log("head: "+head);
         parseProperties();
-        var e:Element = parseLayers();
+        var g:Group = parseLayers();
         //var e:Element = new Element();
-        return e;
+        return g;
     }
 
 }

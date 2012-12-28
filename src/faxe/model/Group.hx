@@ -19,12 +19,15 @@ class Group implements IElement
     public var alignment:AlignConfig;
     public var fixedSize:Rectangle;
     private var isLayer:Bool;
+    public var alpha:Float;
 
 	public function new ( name:String ) 
 	{
         children = [];
         this.name = name;
         alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE, top: 0, bottom: 0, left: 0, right: 0 };
+        fixedSize = new Rectangle( 0, 0, 0, 0 );
+        alpha = 1;
 	}
 
     public function addChild( e:IElement ):Void {
@@ -97,6 +100,7 @@ class Group implements IElement
     public function render( autoAlign:Bool = false ):DisplayNode {
         var e:ElementSprite = new ElementSprite( autoAlign, isLayer );
         e.name = name;
+        e.alpha = alpha;
         e.element = this;
         e.x = fixedSize.x;
         e.y = fixedSize.y;

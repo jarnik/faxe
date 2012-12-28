@@ -14,15 +14,19 @@ class Image implements IElement
 {
     public var bitmapData:BitmapData;
     public var fixedSize:Rectangle;
+    public var alpha:Float;
 
 	public function new ( bmd:BitmapData ) 
 	{
         bitmapData = bmd;
         fixedSize = new Rectangle( 0, 0, bitmapData.width, bitmapData.height );
+        alpha = 1;
 	}
 
     public function render( isRoot:Bool = false ):DisplayNode {
-        return NodeBitmap( new Bitmap( bitmapData ) );
+        var b:Bitmap = new Bitmap( bitmapData );
+        b.alpha = alpha;
+        return NodeBitmap( b );
     }
 
 }

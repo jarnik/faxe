@@ -33,6 +33,7 @@
     -->
     <assets path="Assets" rename="assets" include="*.png" type="image" />
     <assets path="Assets/layouts" rename="assets/layouts" include="*.svg" type="binary" />
+    <assets path="Assets/layouts" rename="assets/layouts" include="*.xcf" type="binary" />
     <!--
     -->
 	
