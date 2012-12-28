@@ -43,56 +43,41 @@ typedef AlignConfig = {
 class ElementSprite extends Sprite
 {
 
-    /*
-    public var marginLeft:Float;
-    public var marginRight:Float;
-    public var marginTop:Float;
-    public var marginBottom:Float;
-    public var wrapperWidth:Float;
-    public var wrapperHeight:Float;*/
-
-    //public var content:Sprite;
     public var element:IElement;
     public var alignment:AlignConfig;
+    public var fixedSize:Rectangle;
+    private var isLayer:Bool;
 
     public var kids:Hash<ElementSprite>;
 
-	public function new ( autoAlign:Bool = false ) 
+	public function new ( autoAlign:Bool = false, isLayer:Bool = false ) 
 	{
         super();
         
-        /*
-        marginLeft = 0;
-        marginRight = 0;
-        marginTop = 0;
-        marginBottom = 0;*/
-
+        this.isLayer = isLayer;
         kids = new Hash<ElementSprite>();
 
-        //alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
+        resetAlignment();
 
         if ( autoAlign )
             addEventListener( Event.ADDED_TO_STAGE, onAddedToStage );
 	}
 
     public function resetAlignment():Void {
-        //alignment.h = ALIGN_H_NONE;
-        //alignment.v = ALIGN_V_NONE;
+        alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE, top: 0, bottom: 0, left: 0, right: 0 };
     }
 
     public function align( r:Rectangle = null ):Void {
-        // TODO when parent is transformed, alignment goes wild
-
         //Debug.log(name+" align CFG "+alignment+" margins "+marginLeft+" "+marginRight+" "+marginTop+" "+marginBottom);
-        /*
-        var w:Float = ( wrapperWidth > 0 ? wrapperWidth : 0 );
-        var h:Float = ( wrapperHeight > 0 ? wrapperHeight : 0 );
+        var w:Float = fixedSize.width;
+        var h:Float = fixedSize.height;
 
         switch ( alignment.h ) {
             case ALIGN_H_LEFT:
-                x = r.x + marginLeft;
+                x = r.x + alignment.left;
             case ALIGN_H_RIGHT:
-                x = r.x + r.width - w - marginRight;
+                x = r.x + r.width - w - alignment.right;
+                //trace("going right to "+r+" "+w+" ar "+alignment.right+" x "+x);
             case ALIGN_H_CENTER:
                 x = r.x + (r.width - w) / 2;
             case ALIGN_H_STRETCH:
@@ -103,9 +88,9 @@ class ElementSprite extends Sprite
 
         switch ( alignment.v ) {
             case ALIGN_V_TOP:
-                y = r.y + marginTop;
+                y = r.y + alignment.top;
             case ALIGN_V_BOTTOM:
-                y = r.y + r.height - h - marginBottom;
+                y = r.y + r.height - h - alignment.bottom;
             case ALIGN_V_MIDDLE:
                 y = r.y + (r.height - h) / 2;
             case ALIGN_V_STRETCH:
@@ -113,40 +98,24 @@ class ElementSprite extends Sprite
                 height = r.height;
             default:                    
         }
-        //Debug.log(name+" aligning myself to "+x+" "+y+" within "+r);        
+        //trace(name+" aligning myself to "+x+" "+y+" within "+r+" by "+alignment);        
 
         r.x = 0; r.y = 0;
-        r.width = wrapperWidth < 0 ? r.width : wrapperWidth;
-        r.height = wrapperHeight < 0 ? r.height : wrapperHeight;
+        r.width = isLayer ? r.width : w;
+        r.height = isLayer ? r.height : h;
 
-        if ( content != null ) {
-            r.x -= content.x;
-            r.y -= content.y;
-            //Debug.log(name+" aligning kids to "+r);
-            for ( i in 0...content.numChildren ) {
-                if ( Std.is( content.getChildAt( i ), ElementSprite ) )
-                    cast( content.getChildAt( i ), ElementSprite ).align( r.clone() );
-            }
-        }*/
+        for ( kid in kids )
+            kid.align( r.clone() );
     }
     
     public function addSubElement( e:DisplayNode, ?x:Float, ?y:Float ):Void {
-        //if ( e.parent != null && e.parent.parent != null && Std.is( e.parent.parent, ElementSprite ) )
-        //    cast(e.parent.parent,ElementSprite).removeSubElement( e );
-
-        /*
-        content.addChild( e );
-        kids.set( e.name, e );
-        if ( !Math.isNaN( x ) )
-            e.x = x - content.x;
-        if ( !Math.isNaN( y ) )
-            e.y = y - content.y;
-            */
         var d:DisplayObject = null;
         switch ( e ) {
             case NodeElement( e ):
                 kids.set( e.name, e );
                 d = e;
+                if ( d.parent != null && Std.is( d.parent, ElementSprite ) )
+                    cast(d.parent,ElementSprite).removeSubElement( cast( d,ElementSprite ) );
             case NodeBitmap( b ):
                 d = b;
             case NodeShape( s ):
@@ -154,57 +123,14 @@ class ElementSprite extends Sprite
             case NodeText( t ):
                 d = t;
         }
+
         addChild( d );
     }
 
     public function removeSubElement( e:ElementSprite ):Void {
-        /*
-        content.removeChild( e );
+        removeChild( e );
         kids.remove( e.name );
-        */
     }
-
-    /*
-    public function addContent( _content:Sprite, fixedSize:Rectangle = null ):Void {
-        content = _content;
-        addChild( content );
-
-        var e:ElementSprite;
-        for ( i in 0...content.numChildren ) {
-            if ( Std.is( content.getChildAt( i ), ElementSprite ) ) {
-                e = cast( content.getChildAt( i ), ElementSprite );
-                kids.set( e.name, e );
-            }
-        }
-
-        if ( fixedSize == null ) {
-            //Debug.log(name +" pos "+x+" "+y+" content "+content.x+" "+content.y+" gonna measure bounds");
-            var r:Rectangle = content.getBounds( this );
-            x += r.x;
-            y += r.y;
-            content.x -= r.x;
-            content.y -= r.y;
-            wrapperWidth = r.width;
-            wrapperHeight = r.height;
-            //Debug.log(name +" my content is bounds "+r);
-        } else {
-            // negative size means inherit from parent
-            wrapperWidth = -fixedSize.width;
-            wrapperHeight = -fixedSize.height;
-            //Debug.log(name + " wrapper shrinked to "+wrapperWidth+" "+wrapperHeight+" fixed "+fixedSize);
-        }
-        //Debug.log(name +" wrapper size "+wrapperWidth +" "+wrapperHeight+" pos "+x);
-
-        // for all kids, set their respective border towards me
-        for ( c in kids ) {
-            c.marginLeft = c.x + content.x;
-            c.marginTop = c.y + content.y;
-            c.marginRight = Math.abs( wrapperWidth ) - (c.x + content.x + Math.abs(c.wrapperWidth));
-            c.marginBottom = Math.abs( wrapperHeight ) - (c.y + content.y + Math.abs(c.wrapperHeight));
-            //Debug.log(" > kid "+c.name+" margins "+c.marginLeft+" "+c.marginRight+" "+c.marginTop+" "+c.marginBottom);
-            //Debug.log("wrapper "+wrapperWidth+" "+wrapperHeight+" c "+c.x+" "+c.y+" content "+content.x+" "+content.y+" c.wrapper "+c.wrapperWidth+" "+c.wrapperHeight);
-        }
-    }*/
 
     public function fetch( path:String ):ElementSprite {
         var e:ElementSprite = null;
@@ -260,7 +186,7 @@ class ElementSprite extends Sprite
     private function onResize( e:Event = null ):Void {
         if ( stage == null )
             return;
-        //Debug.log("Resizing "+name+" stage.stageWidth "+stage.stageWidth);
+        //trace("Resizing "+name+" stage.stageWidth "+stage.stageWidth);
         align( new Rectangle( 0, 0, stage.stageWidth, stage.stageHeight ) );
     }
 

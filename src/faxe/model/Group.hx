@@ -18,6 +18,7 @@ class Group implements IElement
     public var name:String;
     public var alignment:AlignConfig;
     public var fixedSize:Rectangle;
+    private var isLayer:Bool;
 
 	public function new ( name:String ) 
 	{
@@ -37,9 +38,9 @@ class Group implements IElement
     public function updateExtent( forcedSize:Rectangle = null ):Void {
         if ( forcedSize != null ) {
             fixedSize = forcedSize.clone();
+            isLayer = true;
         } else {
             fixedSize = new Rectangle( Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY, 0, 0 );
-            //fixedSize = new Rectangle( 0, 0, 0, 0 );
 
             //trace( "gonna compute extent for kids of "+name );
             for ( kid in children ) {
@@ -51,7 +52,6 @@ class Group implements IElement
             fixedSize.width -= fixedSize.x;
             fixedSize.height -= fixedSize.y;
             for ( kid in children ) {
-                //kid.moveOrigin( fixedSize.x, fixedSize.y );
                 kid.fixedSize.x -= fixedSize.x;
                 kid.fixedSize.y -= fixedSize.y;
             }
@@ -72,12 +72,6 @@ class Group implements IElement
 
         //trace("group "+name+" extents "+fixedSize);
     }
-
-    /*
-    public function moveOrigin( x:Float, y:Float ):Void {
-        fixedSize.x += x;
-        fixedSize.y += y;
-    }*/
 
     public function fetch( path:String ):Group {
         var pathElements:Array<String> = path.split("."); 
@@ -101,11 +95,12 @@ class Group implements IElement
     }
 
     public function render( autoAlign:Bool = false ):DisplayNode {
-        var e:ElementSprite = new ElementSprite( autoAlign );
+        var e:ElementSprite = new ElementSprite( autoAlign, isLayer );
         e.name = name;
         e.element = this;
         e.x = fixedSize.x;
         e.y = fixedSize.y;
+        e.fixedSize = fixedSize;
         e.alignment = alignment;
 
         for ( c in children ) {
