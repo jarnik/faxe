@@ -30,7 +30,7 @@ class Shape implements IElement
 	}
 
     private function updateExtent():Void {
-       // trace("extent shape "+path+" matrix "+path.matrix );
+        //trace("extent shape "+path+" matrix "+path.matrix );
                
         var gfx:GfxExtent = new GfxExtent();
         var context:RenderContext = new RenderContext( path.matrix.clone() );

@@ -28,7 +28,7 @@
      inkscape:cx="274.05375"
      inkscape:cy="277.56339"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g2987"
      showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="760"
@@ -79,7 +79,7 @@
          style="fill:#0000ff;fill-rule:evenodd;stroke:#000000;stroke-width:0.392279px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     </g>
     <g
-       id="btnCompletedContinue"
+       id="btnCompletedContinue[R]"
        style="display:inline"
        transform="translate(-191.79648,352.62142)">
       <rect
@@ -331,7 +331,7 @@
                sodipodi:nodetypes="czcsc"
                inkscape:connector-curvature="0"
                id="path4532-7"
-               d="m 83.785804,33.529987 c 0,0 15.348457,11.498811 15.702007,47.671574 0.35356,36.172759 -15.702007,46.328419 -15.702007,46.328419 25.017746,-1.08927 44.968746,-21.71387 44.968746,-46.999993 0,-25.286129 -19.951,-45.910726 -44.968746,-47 z"
+               d="m 83.785804,33.529987 c 0,0 15.348457,11.498811 15.702007,47.671578 0.35356,36.172755 -15.702007,46.328415 -15.702007,46.328415 25.017746,-1.08927 44.968746,-21.71387 44.968746,-46.999995 0,-25.286127 -19.951,-45.910724 -44.968746,-46.999998 z"
                style="opacity:0.2889734;fill:#000000;fill-opacity:1;stroke:none;display:inline" />
           </g>
           <path

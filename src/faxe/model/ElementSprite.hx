@@ -48,16 +48,16 @@ class ElementSprite extends Sprite
     public var marginRight:Float;
     public var marginTop:Float;
     public var marginBottom:Float;
-    public var alignment:AlignConfig;
     public var wrapperWidth:Float;
     public var wrapperHeight:Float;*/
 
     //public var content:Sprite;
     public var element:IElement;
+    public var alignment:AlignConfig;
 
     public var kids:Hash<ElementSprite>;
 
-	public function new ( isRootNode:Bool = false ) 
+	public function new ( autoAlign:Bool = false ) 
 	{
         super();
         
@@ -71,7 +71,7 @@ class ElementSprite extends Sprite
 
         //alignment = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 
-        if ( isRootNode )
+        if ( autoAlign )
             addEventListener( Event.ADDED_TO_STAGE, onAddedToStage );
 	}
 
