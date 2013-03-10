@@ -131,6 +131,11 @@ class ElementSprite extends Sprite
         removeChild( e );
         kids.remove( e.name );
     }
+	
+	public function hideAllKids():Void {
+		for ( k in kids )
+			k.visible = false;
+	}
 
     public function fetch( path:String ):ElementSprite {
         var e:ElementSprite = null;
