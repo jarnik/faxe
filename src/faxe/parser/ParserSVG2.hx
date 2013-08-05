@@ -15,33 +15,62 @@ import nme.events.MouseEvent;
 
 import format.svg.PathSegment;
 import format.gfx.GfxGraphics;
-import format.svg.Path;
+//import format.svg.Path;
+import format.svg.Group;
 import format.svg.PathParser;
 import format.svg.RenderContext;
 
 //import gaxe.Debug;
 
-import faxe.model.Element;
+import faxe.parser.IParser;
+import faxe.model.IElement;
 import faxe.model.ElementSprite;
 import faxe.model.Image;
 import faxe.model.Shape;
 import faxe.model.Text;
 
-class ParserSVG implements IParser
+import format.svg.SVGData;
+
+class ParserSVG2 implements IParser
 {
+    private var data:SVGData;
+
 	public function new () {
     }
 
-    public function parse( file:ByteArray ):Element {
-        var xml:Xml = Xml.parse( file.toString() );
-        var root:Xml = null;
-        for ( ee in xml ) {
-            if ( ee.nodeType == Xml.Element )
-                root = ee;
-        }
-
-        return parseElement( root );
+    public function parse( file:ByteArray ):IElement {
+        data = new SVGData (Xml.parse ( file.toString() ));
+        var root:IElement = parseElement( DisplayGroup( data ), 2 );
+        return root;
     }
+
+    private function parseElement( de:DisplayElement, forcedSizeLevel:Int = 0 ):IElement {
+        var e:IElement = null;
+        var forcedSize:Rectangle = null;
+        switch ( de ) {
+            case DisplayGroup( group ):
+                //trace("group "+group.name);
+                var align:AlignConfig = Parser.parseAlign( group.name );
+                var g:faxe.model.Group = new faxe.model.Group( Parser.parseName( group.name ) );
+                for ( kid in group.children )
+                    g.addChild( parseElement( kid, forcedSizeLevel - 1 ) );
+                if ( forcedSizeLevel > 0 ) {
+                    forcedSize = new Rectangle( 0, 0, data.width, data.height );
+                }
+                g.updateExtent( forcedSize );
+                g.alignment = align;
+                e = g;
+            case DisplayPath( p ): 
+                //trace( "path "+p+" "+p.matrix );
+                e = new Shape( p );
+            case DisplayText( t ): 
+                trace( "text not implemented yet, sorry :) " );
+            default:
+        }
+        return e;
+    }
+
+    /*
 
     private function parseTransform( e:Element, xml:Xml ):Void {
         var m:Matrix = e.transform;
@@ -79,8 +108,7 @@ class ParserSVG implements IParser
                         m.d *= Std.parseFloat( values[ 1 ] );
                 }
             } else {
-                //Debug.log("transform type not matched! "+t);
-                trace("transform type not matched! "+t);
+                Debug.log("transform type not matched! "+t);
             }
         }
     }
@@ -208,33 +236,7 @@ class ParserSVG implements IParser
         return r.matched( 1 );
     }
 
-    private function parseAlign( id:String ):AlignConfig {
-        var align:AlignConfig = { h: ALIGN_H_NONE, v: ALIGN_V_NONE };
 
-        var r:EReg = ~/.*\[([A-Za-z]*)\]/;
-        if ( r.match( id ) ) {
-            var cfg:String = r.matched(1).toUpperCase();
-            //Debug.log("align: "+cfg);
-            if ( cfg.indexOf("R") != -1 )
-                align.h = ALIGN_H_RIGHT;
-            if ( cfg.indexOf("L") != -1 )
-                align.h = ALIGN_H_LEFT;
-            if ( cfg.indexOf("C") != -1 )
-                align.h = ALIGN_H_CENTER;
-            if ( cfg.indexOf("T") != -1 )
-                align.v = ALIGN_V_TOP;
-            if ( cfg.indexOf("B") != -1 )
-                align.v = ALIGN_V_BOTTOM;
-            if ( cfg.indexOf("M") != -1 )
-                align.v = ALIGN_V_MIDDLE;
-            if ( cfg.indexOf("S") != -1 ) {
-                align.v = ALIGN_V_STRETCH;
-                align.h = ALIGN_H_STRETCH;
-            }
-        }
-
-        return align;
-    }
 
     private function parseSize( element:Element, xml:Xml ):Void {
         if ( 
@@ -334,7 +336,7 @@ class ParserSVG implements IParser
             case "svg:path", "path":
                 element = parsePath( xml );
             default:
-                //Debug.log("unimplemented "+xml.nodeName);
+                Debug.log("unimplemented "+xml.nodeName);
                 element = new Element(); 
         }
         element.alignment = parseAlign( xml.get("id") );
@@ -368,7 +370,8 @@ class ParserSVG implements IParser
     }
 
     private function onClick(e:MouseEvent):Void {
-        //Debug.log("click "+e.target);
+        Debug.log("click "+e.target);
     }
+    */
 
 }
